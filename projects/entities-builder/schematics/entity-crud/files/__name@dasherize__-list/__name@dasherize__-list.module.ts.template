@@ -1,0 +1,25 @@
+import { NgModule } from '@angular/core';
+import { CommonModule } from '@angular/common';
+import { <%= classify(name) %>ListComponent } from './<%= dasherize(name) %>-list.component';
+import { MatPaginatorModule } from '@angular/material/paginator';
+import { MatTableModule } from '@angular/material/table';
+import { RouterModule } from '@angular/router';
+import { MatButtonModule } from '@angular/material/button';
+import { MatIconModule } from '@angular/material/icon';
+
+
+@NgModule({
+  declarations: [
+    <%= classify(name) %>ListComponent
+  ],
+  imports: [
+    CommonModule,
+    MatPaginatorModule,
+    MatIconModule,
+    MatPaginatorModule,
+    RouterModule,
+    MatButtonModule,
+    MatTableModule
+  ]
+})
+export class <%= classify(name) %>ListModule { }

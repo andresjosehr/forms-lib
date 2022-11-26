@@ -1,0 +1,27 @@
+import { NgModule } from '@angular/core';
+import { CommonModule } from '@angular/common';
+import { <%= classify(name) %>ListModule } from './<%= dasherize(name) %>-list/<%= dasherize(name) %>-list.module';
+import { Route, RouterModule } from '@angular/router';
+import { <%= classify(name) %>ListComponent } from './<%= dasherize(name) %>-list/<%= dasherize(name) %>-list.component';
+
+const routes: Route[] = [
+    {
+        path: '',
+        component: <%= classify(name) %>ListComponent,
+    },
+    {
+        path: 'lista',
+        component: <%= classify(name) %>ListComponent,
+    }
+]
+
+
+@NgModule({
+  declarations: [],
+  imports: [
+    CommonModule,
+    RouterModule.forChild(routes),
+    <%= classify(name) %>ListModule,
+  ]
+})
+export class <%= classify(name) %>Module { }

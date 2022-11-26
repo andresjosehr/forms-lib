@@ -1,0 +1,11 @@
+{
+  "$schema": "../../../node_modules/@angular-devkit/schematics/collection-schema.json",
+  "schematics": {
+    "entity-crud": {
+      "description": "Generate a super ui component in the project.",
+      "factory": "./entity-crud/index#entityCrudGenerator",
+      "schema": "./entity-crud/schema.json",
+      "aliases": ["entity-crud"]
+    }
+  }
+}

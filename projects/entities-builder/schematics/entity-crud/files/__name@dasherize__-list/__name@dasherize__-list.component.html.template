@@ -1,0 +1,75 @@
+<div class="w-full p-10">
+	<div class="grid grid-cols-1 sm:grid-cols-2 gap-8 w-full mb-6">
+		<div class="w-full col-span-1">
+			<div class="text-3xl font-bold"><%= pluralizeSpanish(label) %></div>
+			<div class="text-secondary">Una lista de <%= labelize(pluralizeSpanish(label)) %> registradas en el sistema</div>
+		</div>
+		<div class="w-full col-span-1">
+			<div class='sm:text-right'>
+				<button [routerLink]="'/<%= labelize(pluralizeSpanish(label)) %>/crear'" class="w-full sm:w-fit rounded mr-1 px-3 bg-primary-300 text-on-primary-300" mat-stroked-button>Crear <%= labelize(label) %></button>
+			</div>
+		</div>
+		<div class="w-full col-span-1">
+			<!-- Success -->
+			<fuse-alert *ngIf="m" [type]="'success'">
+				<span fuseAlertTitle>Exito</span>
+				El/la <%= labelize(label) %> ha sido
+				<span *ngIf="m==='1'">creado</span>
+				<span *ngIf="m==='2'">actualizado</span>
+				exitosamente
+			</fuse-alert>
+		</div>
+	</div>
+	<div class="sm:col-span-6 flex flex-col flex-auto p-6 bg-card shadow rounded-2xl overflow-hidden">
+		<!-- Section -->
+		<div class="grid grid-cols-12 gap-5">
+			<div class="col-span-12 sm:col-span-3 text-center sm:text-left">
+				<div class="text-lg font-medium tracking-tight leading-6 truncate">Detalles de la <%= labelize(label) %></div>
+			</div>
+		</div>
+		<div class="flex flex-col flex-auto mt-2 overflow-x-auto">
+				<table
+						class="md:min-w-240 overflow-y-visible"
+						mat-table
+						[dataSource]="dataSource">
+
+        <% for(let e in entitySchema) { %>
+          <% if(entitySchema[e].visible) { %>
+            <ng-container matColumnDef="<%= entitySchema[e].name %>">
+              <th mat-header-cell *matHeaderCellDef><%= entitySchema[e].label %></th>
+              <td data-label="Dirección" mat-cell *matCellDef="let <%= camelize(name) %>" class="px-4">
+                <span class="font-medium">
+                  {{<%= camelize(name) %>.<%= entitySchema[e].name %> || "-"}}
+                </span>
+              </td>
+            </ng-container>
+          <% } %>
+        <% } %>
+
+				<!-- Acciones -->
+				<ng-container matColumnDef="actions">
+					<th mat-header-cell *matHeaderCellDef>Acciones</th>
+					<td data-label="Acciones" mat-cell *matCellDef="let <%= camelize(name) %>">
+						<div class="flex justify-end gap-2">
+							<div class="1/2">
+									<mat-icon [routerLink]="'/<%= labelize(pluralizeSpanish(label)) %>/editar/'+<%= camelize(name) %>.id" class="text-on-primary-300">edit</mat-icon>
+							</div>
+						<div class="1/2">
+									<mat-icon (click)="destroy(<%= camelize(name) %>.id)" class="text-red-500">delete</mat-icon>
+							</div>
+						</div>
+					</td>
+				</ng-container>
+
+					<tr class="table-header" mat-header-row *matHeaderRowDef="columns"></tr>
+					<tr class="cursor-pointer" mat-row *matRowDef="let row; columns: columns;"></tr>
+				</table>
+				<mat-paginator [length]="entitiesPaginated?.total"
+						[pageSize]="entitiesPaginated?.per_page"
+						[pageSizeOptions]="[10, 25, 100]"
+						(page)="paginate($event)"
+						aria-label="Select page">
+				</mat-paginator>
+		</div>
+	</div>
+</div>

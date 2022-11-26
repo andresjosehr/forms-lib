@@ -1,0 +1,25 @@
+{
+  "$schema": "http://json-schema.org/schema",
+  "$id": "EntitySchematic",
+  "title": "The entity schema",
+  "type": "object",
+  "properties": {
+    "name": {
+      "description": "The name of the component.",
+      "type": "string"
+    },
+    "path": {
+      "type": "string",
+      "format": "path",
+      "description": "The path to create the component.",
+      "x-prompt": "What path would you like to use for the component?",
+      "default": "src/app"
+    },
+    "label": {
+      "type": "string",
+      "description": "The label of the component.",
+      "x-prompt": "What label would you like to use for the component?"
+    }
+   },
+  "required": []
+}
