@@ -1,11 +1,15 @@
 {
   "name": "entities-builder",
-  "version": "0.0.1",
+  "version": "0.0.3",
   "scripts": {
     "watch": "tsc -p tsconfig.schematics.json --watch",
     "build": "cd ../../ && npm run build && cd projects/entities-builder && tsc -p tsconfig.schematics.json",
     "postbuild": "copyfiles schematics/*/schema.json schematics/*/files/** schematics/collection.json ../../dist/entities-builder/",
     "make-publish": "npm unpublish --registry http://localhost:4873 --force && npm publish --registry http://localhost:4873"
+  },
+  "schematics": "./schematics/collection.json",
+  "ng-add": {
+    "save": "devDependencies"
   },
   "peerDependencies": {
     "@angular/common": "^15.0.0",

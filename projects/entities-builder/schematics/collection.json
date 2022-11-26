@@ -1,11 +1,15 @@
 {
   "$schema": "../../../node_modules/@angular-devkit/schematics/collection-schema.json",
   "schematics": {
+    "ng-add": {
+      "description": "Add my library to the project.",
+      "factory": "./ng-add/index#ngAdd"
+    },
     "entity-crud": {
       "description": "Generate a super ui component in the project.",
       "factory": "./entity-crud/index#entityCrudGenerator",
       "schema": "./entity-crud/schema.json",
-      "aliases": ["entity-crud"]
+      "aliases": ["crud"]
     }
   }
 }
