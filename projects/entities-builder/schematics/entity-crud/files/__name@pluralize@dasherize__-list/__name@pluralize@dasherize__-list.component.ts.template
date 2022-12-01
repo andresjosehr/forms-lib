@@ -9,10 +9,10 @@ import { <%= classify(name) %> } from '../<%= dasherize(name) %>';
 import { <%= classify(name) %>Service } from '../service/<%= dasherize(name) %>.service';
 
 @Component({
-  selector: 'app-<%= dasherize(name) %>-list',
-  templateUrl: './<%= dasherize(name) %>-list.component.html'
+  selector: 'app-<%= pluralize(dasherize(name)) %>-list',
+  templateUrl: './<%= pluralize(dasherize(name)) %>-list.component.html'
 })
-export class <%= classify(name) %>ListComponent extends EntitiesListComponent<<%= classify(name) %>>{
+export class <%= pluralize(classify(name)) %>ListComponent extends EntitiesListComponent<<%= classify(name) %>>{
 
   columns: Array<string> = [<% for(let e in entitySchema) { %><% if(entitySchema[e].visible) { %><% if(e!=0) { %>,<% } %> '<%=entitySchema[e].name%>'<% } %><% } %>, 'actions'];
 

@@ -1,6 +1,6 @@
 import { NgModule } from '@angular/core';
 import { CommonModule } from '@angular/common';
-import { <%= classify(name) %>ListComponent } from './<%= dasherize(name) %>-list.component';
+import { <%= pluralize(classify(name)) %>ListComponent } from './<%= pluralize(dasherize(name)) %>-list.component';
 import { MatPaginatorModule } from '@angular/material/paginator';
 import { MatTableModule } from '@angular/material/table';
 import { RouterModule } from '@angular/router';
@@ -10,7 +10,7 @@ import { MatIconModule } from '@angular/material/icon';
 
 @NgModule({
   declarations: [
-    <%= classify(name) %>ListComponent
+    <%= pluralize(classify(name)) %>ListComponent
   ],
   imports: [
     CommonModule,
@@ -22,4 +22,4 @@ import { MatIconModule } from '@angular/material/icon';
     MatTableModule
   ]
 })
-export class <%= classify(name) %>ListModule { }
+export class <%= pluralize(classify(name)) %>ListModule { }

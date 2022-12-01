@@ -1,16 +1,15 @@
-import { Tree, Rule, apply, url, applyTemplates, move, chain, mergeWith } from '@angular-devkit/schematics';
+import { Tree, Rule, apply, url, applyTemplates, move, chain, mergeWith, SchematicContext } from '@angular-devkit/schematics';
 import { strings, normalize } from '@angular-devkit/core';
 import { EntityBuilderSchema } from './entity-builder';
 
 
 export function entityCrudGenerator(options : EntityBuilderSchema): Rule {
 
-  return (tree: Tree) => {
+  return (tree: Tree, context: SchematicContext) => {
 
     // Get the file and read it
     const peopleJson = tree.readJson('src\\app\\entities-schemas\\'+ strings.dasherize(options.name) +'.json');
     options['entitySchema'] = peopleJson as any;
-
 
     const templateSource = apply(url('./files'), [
       applyTemplates({
@@ -26,9 +25,27 @@ export function entityCrudGenerator(options : EntityBuilderSchema): Rule {
       move(normalize(`/${options.path}/${pluralize(strings.dasherize(options.name))}`))
     ]);
 
+    // Add simple route inside app.routing.ts
+
+    const routingModule = tree.read('src\\app\\app.routing.ts');
+    const routingModuleContent = (routingModule as any).toString();
+
+    // Remove the first path, example: if string is 'src/app', remove 'src/'
+    const routeBasePath = options.path.replace(/.*\//, '');
+    if (!routingModuleContent.includes(`path: '${strings.dasherize(pluralize(options.label))}',`)) {
+      const newRoutingModuleContent = routingModuleContent.replace('/* Add new routes here */',
+        `/* Add new routes here */
+          { path: '${strings.dasherize(pluralize(options.label))}', loadChildren: () => import('${routeBasePath}/${pluralize(strings.dasherize(options.name))}/${pluralize(strings.dasherize(options.name))}.module').then(m => m.${strings.classify(pluralize(options.name))}Module) },
+        `
+      );
+      tree.overwrite('src\\app\\app.routing.ts', newRoutingModuleContent);
+    }
+
+
+
     return chain([
-      mergeWith(templateSource)
-    ])
+      mergeWith(templateSource),
+    ])(tree, context);
   }
 }
 

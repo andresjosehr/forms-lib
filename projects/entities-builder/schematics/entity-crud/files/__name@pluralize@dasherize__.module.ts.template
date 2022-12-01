@@ -1,0 +1,38 @@
+import { NgModule } from '@angular/core';
+import { CommonModule } from '@angular/common';
+import { <%= pluralize(classify(name)) %>ListModule } from './<%= pluralize(dasherize(name)) %>-list/<%= pluralize(dasherize(name)) %>-list.module';
+import { Route, RouterModule } from '@angular/router';
+import { <%= pluralize(classify(name)) %>ListComponent } from './<%= pluralize(dasherize(name)) %>-list/<%= pluralize(dasherize(name)) %>-list.component';
+import { Manage<%= classify(name) %>Module } from './manage-<%= dasherize(name) %>/manage-<%= dasherize(name) %>.module';
+import { Manage<%= classify(name) %>Component } from './manage-<%= dasherize(name) %>/manage-<%= dasherize(name) %>.component';
+
+const routes: Route[] = [
+    {
+        path: '',
+        component: <%= pluralize(classify(name)) %>ListComponent,
+    },
+    {
+        path: 'lista',
+        component: <%= pluralize(classify(name)) %>ListComponent,
+    },
+    {
+        path: 'crear',
+        component: Manage<%= classify(name) %>Component,
+    },
+    {
+        path: 'editar/:id',
+        component: Manage<%= classify(name) %>Component,
+    }
+]
+
+
+@NgModule({
+  declarations: [],
+  imports: [
+    CommonModule,
+    RouterModule.forChild(routes),
+    <%= pluralize(classify(name)) %>ListModule,
+    Manage<%= classify(name) %>Module
+  ]
+})
+export class <%= pluralize(classify(name)) %>Module { }

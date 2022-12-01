@@ -5,6 +5,7 @@
     "watch": "tsc -p tsconfig.schematics.json --watch",
     "build": "cd ../../ && npm run build && cd projects/entities-builder && tsc -p tsconfig.schematics.json",
     "postbuild": "copyfiles schematics/*/schema.json schematics/*/files/** schematics/collection.json ../../dist/entities-builder/",
+    "b": "tsc -p tsconfig.schematics.json && copyfiles schematics/*/schema.json schematics/*/files/** schematics/collection.json ../../dist/entities-builder/",
     "make-publish": "npm unpublish --registry http://localhost:4873 --force && npm publish --registry http://localhost:4873"
   },
   "schematics": "./schematics/collection.json",

@@ -5,9 +5,19 @@ export interface EntityBuilderSchema {
   entitySchema: [
     {
       name: string,
-      nameSpanish: string,
+      label: string,
       type: string,
-      required: boolean,
+      visible: boolean,
+      editable: boolean,
+      sqlProperties: {
+        type: string,
+        length: number,
+        nullable: boolean
+      },
+      validations: {
+        front: string,
+        back: string
+      }
     }
   ],
 

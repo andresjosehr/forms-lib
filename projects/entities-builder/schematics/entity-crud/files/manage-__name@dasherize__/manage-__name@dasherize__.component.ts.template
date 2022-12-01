@@ -1,0 +1,32 @@
+import { Component } from '@angular/core';
+import { FormBuilder, FormGroup, Validators } from '@angular/forms';
+import { ActivatedRoute, Router } from '@angular/router';
+import { ManageEntityComponent } from 'app/shared/generic-components/manage-entity/manage-entity.component';
+import { GlobalService } from 'app/shared/services/global/global.service';
+
+import { <%= classify(name) %> } from '../<%= dasherize(name) %>';
+import { <%= classify(name) %>Service } from '../service/<%= dasherize(name) %>.service';
+
+@Component({
+  selector: 'app-manage-<%= dasherize(name) %>',
+  templateUrl: './manage-<%= dasherize(name) %>.component.html',
+})
+export class Manage<%= classify(name) %>Component extends ManageEntityComponent<<%= classify(name) %>> {
+
+    <%= camelize(name) %>FormGroup: FormGroup;
+
+    constructor(
+      protected _globalService: GlobalService,
+		  protected _activateRoute: ActivatedRoute,
+		  protected _formBuilder: FormBuilder,
+		  protected _router: Router,
+      protected _service: <%= classify(name) %>Service,
+    ) {
+        const entityFormGroup = _formBuilder.group({
+          <% for(let e in entitySchema) { %> <% if(entitySchema[e].editable) { %>
+            <%= entitySchema[e].name %>: [<% if(entitySchema[e].validations.front) { %>, <%= entitySchema[e].validations.front %><% } %>],
+          <% } %><% } %>
+        });
+        super(_globalService, _activateRoute, _formBuilder, _router, entityFormGroup, _service, '<%= pluralizeSpanish(label) %>', '<%= label %>');
+    }
+}

@@ -11,7 +11,7 @@ export class <%= classify(name) %>Service extends GenericServiceService<<%= clas
   constructor(
     protected _httpClient: HttpClient,
   ) {
-    super(_httpClient, '<%= dasherize(name) %>');
+    super(_httpClient, '<%= pluralize(dasherize(name)) %>');
   }
 
 }
