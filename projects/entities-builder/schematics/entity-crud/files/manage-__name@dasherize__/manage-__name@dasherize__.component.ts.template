@@ -7,6 +7,12 @@ import { GlobalService } from 'app/shared/services/global/global.service';
 import { <%= classify(name) %> } from '../<%= dasherize(name) %>';
 import { <%= classify(name) %>Service } from '../service/<%= dasherize(name) %>.service';
 
+<% for(let e in entitySchema) { %>
+  <% if(entitySchema[e].inputType === 'relatedEntity') { %>
+    import { <%= pluralize(relatedEntityName) %>Service } from '<%= relatedEntityPath %>/service/<%= dasherize(relatedEntityPath) %>';
+  <% } %>
+<% } %>
+
 @Component({
   selector: 'app-manage-<%= dasherize(name) %>',
   templateUrl: './manage-<%= dasherize(name) %>.component.html',
@@ -21,6 +27,7 @@ export class Manage<%= classify(name) %>Component extends ManageEntityComponent<
 		  protected _formBuilder: FormBuilder,
 		  protected _router: Router,
       protected _service: <%= classify(name) %>Service,
+      protected _<%= camelize(relatedEntityName) %>Service: <%= pluralize(relatedEntityName) %>Service
     ) {
         const entityFormGroup = _formBuilder.group({
           <% for(let e in entitySchema) { %> <% if(entitySchema[e].editable) { %>

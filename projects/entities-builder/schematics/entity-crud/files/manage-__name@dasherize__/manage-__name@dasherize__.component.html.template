@@ -10,11 +10,34 @@
                         </div>
                     </div>
                     <div [formGroup]="entityFormGroup" class="grid sm:grid-cols-2 gap-y-1 gap-x-5 w-full mt-8">
-                    <% for(let e in entitySchema) { %> <% if(entitySchema[e].editable) { %>
+
                         <div class="col-span-1">
                             <mat-form-field class="w-full">
                                 <mat-label><%= entitySchema[e].label %></mat-label>
-                                <input id='<%= entitySchema[e].name %>' type="text" formControlName="<%= entitySchema[e].name %>" matInput>
+
+                                <% if(entitySchema[e].inputType==='text') { %>
+                                  <input id='<%= entitySchema[e].name %>' type="text" formControlName="<%= entitySchema[e].name %>" matInput>
+                                <% } %>
+
+                                <% if(entitySchema[e].inputType==='select') { %>
+                                  <mat-select id='<%= entitySchema[e].name %>' formControlName="<%= entitySchema[e].name %>">
+                                    <mat-option *ngFor="let option of <%= entitySchema[e].name %>Options" [value]="option.value">
+                                      {{ option.label }}
+                                    </mat-option>
+                                  </mat-select>
+                                <% } %>
+
+                                <% if(entitySchema[e].inputType==='date') { %>
+                                  <input id='<%= entitySchema[e].name %>' type="date" formControlName="<%= entitySchema[e].name %>" matInput>
+                                <% } %>
+
+                                <% if(entitySchema[e].inputType==='textarea') { %>
+                                  <textarea id='<%= entitySchema[e].name %>' formControlName="<%= entitySchema[e].name %>" matInput></textarea>
+                                <% } %>
+
+                                <% if(entitySchema[e].inputType==='checkbox') { %>
+                                  <mat-checkbox id='<%= entitySchema[e].name %>' formControlName="<%= entitySchema[e].name %>"></mat-checkbox>
+                                <% } %>
 
                                 <% if(entitySchema[e].validations.back || entitySchema[e].validations.front) { %>
                                 <mat-error *ngFor="let i of _globalService.errorsLength(entityFormGroup.get('<%= entitySchema[e].name %>'))">
@@ -26,7 +49,8 @@
 
                             </mat-form-field>
                         </div>
-                      <% } %><% } %>
+                      <% } %>
+                      <% } %>
                     </div>
                     <!-- Divider -->
                     <div class="mt-11 mb-10 border-t"></div>
