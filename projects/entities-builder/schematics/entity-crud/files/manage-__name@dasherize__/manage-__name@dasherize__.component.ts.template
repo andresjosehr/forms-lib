@@ -27,7 +27,11 @@ export class Manage<%= classify(name) %>Component extends ManageEntityComponent<
 		  protected _formBuilder: FormBuilder,
 		  protected _router: Router,
       protected _service: <%= classify(name) %>Service,
-      protected _<%= camelize(relatedEntityName) %>Service: <%= pluralize(relatedEntityName) %>Service
+      <% for(let e in entitySchema) { %>
+        <% if(entitySchema[e].inputType === 'relatedEntity') { %>
+          protected _<%= camelize(relatedEntityName) %>Service: <%= pluralize(relatedEntityName) %>Service
+        <% } %>
+      <% } %>
     ) {
         const entityFormGroup = _formBuilder.group({
           <% for(let e in entitySchema) { %> <% if(entitySchema[e].editable) { %>
