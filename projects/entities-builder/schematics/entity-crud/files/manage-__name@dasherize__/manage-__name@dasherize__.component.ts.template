@@ -7,9 +7,9 @@ import { GlobalService } from 'app/shared/services/global/global.service';
 import { <%= classify(name) %> } from '../<%= dasherize(name) %>';
 import { <%= classify(name) %>Service } from '../service/<%= dasherize(name) %>.service';
 
-<% for(let e in entitySchema) { %>
-  <% if(entitySchema[e].inputType === 'relatedEntity') { %>
-    import { <%= pluralize(relatedEntityName) %>Service } from '<%= relatedEntityPath %>/service/<%= dasherize(relatedEntityPath) %>';
+<% for(let e of entitySchema) { %>
+  <% if(e.inputType === 'relatedEntity') { %>
+    import { <%= pluralize(e.relatedEntityName) %>Service } from '<%= e.relatedEntityPath %>service/<%= dasherize(pluralize(e.relatedEntityName)) %>.service';
   <% } %>
 <% } %>
 
@@ -27,15 +27,15 @@ export class Manage<%= classify(name) %>Component extends ManageEntityComponent<
 		  protected _formBuilder: FormBuilder,
 		  protected _router: Router,
       protected _service: <%= classify(name) %>Service,
-      <% for(let e in entitySchema) { %>
-        <% if(entitySchema[e].inputType === 'relatedEntity') { %>
-          protected _<%= camelize(relatedEntityName) %>Service: <%= pluralize(relatedEntityName) %>Service
+      <% for(let e of entitySchema) { %>
+        <% if(e.inputType === 'relatedEntity') { %>
+          protected _<%= camelize(e.relatedEntityName) %>Service: <%= pluralize(e.relatedEntityName) %>Service
         <% } %>
       <% } %>
     ) {
         const entityFormGroup = _formBuilder.group({
           <% for(let e in entitySchema) { %> <% if(entitySchema[e].editable) { %>
-            <%= entitySchema[e].name %>: [<% if(entitySchema[e].validations.front) { %>, <%= entitySchema[e].validations.front %><% } %>],
+            <%= entitySchema[e].name %>: [<% if(entitySchema[e]?.validations?.front) { %>, <%= entitySchema[e]?.validations?.front %><% } %>],
           <% } %><% } %>
         });
         super(_globalService, _activateRoute, _formBuilder, _router, entityFormGroup, _service, '<%= pluralizeSpanish(label) %>', '<%= label %>');

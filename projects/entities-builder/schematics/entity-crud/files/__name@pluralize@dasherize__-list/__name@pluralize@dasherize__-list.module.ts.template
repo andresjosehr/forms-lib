@@ -6,6 +6,7 @@ import { MatTableModule } from '@angular/material/table';
 import { RouterModule } from '@angular/router';
 import { MatButtonModule } from '@angular/material/button';
 import { MatIconModule } from '@angular/material/icon';
+import {DateModule} from 'app/shared/date.module';
 
 
 @NgModule({
@@ -19,6 +20,7 @@ import { MatIconModule } from '@angular/material/icon';
     MatPaginatorModule,
     RouterModule,
     MatButtonModule,
+    DateModule,
     MatTableModule
   ]
 })

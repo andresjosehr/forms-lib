@@ -12,7 +12,7 @@
                     <div [formGroup]="entityFormGroup" class="grid sm:grid-cols-2 gap-y-1 gap-x-5 w-full mt-8">
 
                       <% for (let e in entitySchema) { %>
-                      <% if(entitySchema[e].editable!=='hidden') { %>
+                      <% if(entitySchema[e].editable) { %>
                         <div class="col-span-1">
                             <mat-form-field class="w-full">
                                 <mat-label><%= entitySchema[e].label %></mat-label>
@@ -30,7 +30,9 @@
                                 <% } %>
 
                                 <% if(entitySchema[e].inputType==='date') { %>
-                                  <input id='<%= entitySchema[e].name %>' type="date" formControlName="<%= entitySchema[e].name %>" matInput>
+                                  <input class="cursor-pointer" (click)="<%= entitySchema[e].name %>_date.open()" matInput [matDatepicker]="<%= entitySchema[e].name %>_date" id='<%= entitySchema[e].name %>' formControlName="<%= entitySchema[e].name %>">
+                                  <mat-hint>YYYY-MM-DD</mat-hint>
+                                  <mat-datepicker #<%= entitySchema[e].name %>_date></mat-datepicker>
                                 <% } %>
 
                                 <% if(entitySchema[e].inputType==='textarea') { %>
@@ -41,12 +43,14 @@
                                   <mat-checkbox id='<%= entitySchema[e].name %>' formControlName="<%= entitySchema[e].name %>"></mat-checkbox>
                                 <% } %>
 
-                                <% if(entitySchema[e]?.validations?.back || entitySchema[e]?.validations?.front) { %>
-                                <mat-error *ngFor="let i of _globalService.errorsLength(entityFormGroup.get('<%= entitySchema[e].name %>'))">
-                                  <ng-container *ngIf="entityFormGroup.get('<%= entitySchema[e].name %>').hasError(i)">
-                                    {{ entityFormGroup.get('<%= entitySchema[e].name %>').errors[i] }}
-                                  </ng-container>
-                                </mat-error>
+                                <% if(entitySchema[e]?.validations) { %>
+                                  <% if(entitySchema[e]?.validations?.front) { %>
+                                  <mat-error *ngFor="let i of _globalService.errorsLength(entityFormGroup.get('<%= entitySchema[e].name %>'))">
+                                    <ng-container *ngIf="entityFormGroup.get('<%= entitySchema[e].name %>').hasError(i)">
+                                      {{ entityFormGroup.get('<%= entitySchema[e].name %>').errors[i] }}
+                                    </ng-container>
+                                  </mat-error>
+                                  <% } %>
                                 <% } %>
 
                             </mat-form-field>

@@ -13,7 +13,6 @@ export function entityCrudGenerator(options: EntityBuilderSchema): Rule {
     options = checkForRelatedEntities(tree, options);
     checkNewRoute(tree, options);
 
-    // options = checkForRelatedEntities(tree, options);
 
     const templateSource = apply(url('./files'), [
       applyTemplates({
