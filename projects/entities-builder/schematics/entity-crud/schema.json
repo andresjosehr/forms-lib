@@ -14,11 +14,6 @@
       "description": "The path to create the component.",
       "x-prompt": "What path would you like to use for the component?",
       "default": "src/app"
-    },
-    "label": {
-      "type": "string",
-      "description": "The label of the component.",
-      "x-prompt": "What label would you like to use for the component?"
     }
    },
   "required": []

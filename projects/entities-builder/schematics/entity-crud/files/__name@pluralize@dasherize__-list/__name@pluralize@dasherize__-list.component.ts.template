@@ -4,6 +4,7 @@ import { ActivatedRoute, Router } from '@angular/router';
 import { UserService } from 'app/core/user/user.service';
 import { EntitiesListComponent } from 'app/shared/generic-components/entities-list/entities-list.component';
 import { GlobalService } from 'app/shared/services/global/global.service';
+import { FuseConfirmationService } from '@fuse/services/confirmation';
 
 import { <%= classify(name) %> } from '../<%= dasherize(name) %>';
 import { <%= classify(name) %>Service } from '../service/<%= dasherize(name) %>.service';
@@ -23,8 +24,15 @@ export class <%= pluralize(classify(name)) %>ListComponent extends EntitiesListC
     protected _globalService: GlobalService,
     protected _userService: UserService,
     protected _service: <%= classify(name) %>Service,
+    protected _fuseConfirmationService: FuseConfirmationService,
   ) {
-    super(_activatedRoute, _router, _formBuilder, _globalService, _userService, _service, '<%= pluralizeSpanish(label) %>', '<%= label %>');
+    const searchFormGroup = _formBuilder.group({
+        searchString: [],
+        <% for(let e in entitySchema) { %> <% if(entitySchema[e].searchable) { %>
+            <%= entitySchema[e].name %>: [],
+          <% } %><% } %>
+    });
+    super(_activatedRoute, _router, _formBuilder, _globalService, _userService, _fuseConfirmationService, searchFormGroup, _service, '<%= pluralizeSpanish(label) %>', '<%= label %>');
   }
 }
 

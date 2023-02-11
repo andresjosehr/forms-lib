@@ -43,6 +43,16 @@
                                   <mat-checkbox id='<%= entitySchema[e].name %>' formControlName="<%= entitySchema[e].name %>"></mat-checkbox>
                                 <% } %>
 
+
+                                <% if(entitySchema[e].inputType==='relatedSelect') { %>
+
+                                  <mat-select id='<%= entitySchema[e].name %>' formControlName="<%= entitySchema[e].name %>">
+                                    <mat-option *ngFor="let option of <%= camelize(pluralize(entitySchema[e].relatedEntityName)) %>" [value]="option.id">
+                                      {{ option.name }}
+                                    </mat-option>
+                                  </mat-select>
+                                <% } %>
+
                                 <% if(entitySchema[e]?.validations) { %>
                                   <% if(entitySchema[e]?.validations?.front) { %>
                                   <mat-error *ngFor="let i of _globalService.errorsLength(entityFormGroup.get('<%= entitySchema[e].name %>'))">

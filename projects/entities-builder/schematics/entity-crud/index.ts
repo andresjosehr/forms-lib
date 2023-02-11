@@ -8,10 +8,15 @@ export function entityCrudGenerator(options: EntityBuilderSchema): Rule {
   return (tree: Tree, context: SchematicContext) => {
 
     // Get the file and read it
-    const peopleJson = tree.readJson('src\\app\\entities-schemas\\'+ strings.dasherize(options.name) +'.json');
-    options['entitySchema'] = peopleJson as any;
+    const name = options.name.toLowerCase();
+    const entity = tree.readJson('src\\app\\entities-schemas\\'+ strings.dasherize(name) +'.json') as any;
+
+    options['entitySchema'] = entity.fields;
+    options['label'] = entity.label;
+    options['searchableList'] = entity.searchableList;
     options = checkForRelatedEntities(tree, options);
     checkNewRoute(tree, options);
+    checkMenu(tree, options);
 
 
     const templateSource = apply(url('./files'), [
@@ -38,9 +43,9 @@ export function entityCrudGenerator(options: EntityBuilderSchema): Rule {
 
 function checkForRelatedEntities(tree: Tree, options: EntityBuilderSchema): EntityBuilderSchema {
   options.entitySchema = options.entitySchema.map((field) => {
-    if(field.inputType === 'relatedEntity') {
+    if(field.inputType === 'relatedSelect') {
 
-      const entityName = field.sqlProperties.relatedEntity?.split(':')[0] as string;
+      const entityName = field.relationshipProperties?.entity as string;
 
       // search recursively in the entities folder for the entity
       let relatedEntityPath = ''
@@ -78,6 +83,30 @@ function checkNewRoute(tree: Tree, options: EntityBuilderSchema): void{
      );
      tree.overwrite('src\\app\\app.routing.ts', newRoutingModuleContent);
    }
+}
+
+function checkMenu(tree: Tree, options: EntityBuilderSchema): void {
+  // Get file in src\app\mock-api\common\navigation\data.ts
+  const navigationFile = tree.read('src\\app\\mock-api\\common\\navigation\\data.ts');
+
+  // Check if file includes "id   : 'example',"
+  if (navigationFile && !navigationFile.toString().includes(`id   : '${strings.dasherize(pluralize(options.name))}',`)) {
+    const navigationFileContent = navigationFile.toString();
+    const newNavigationFileContent = navigationFileContent.replace('/* Add new menu items here */',
+      `{
+          id   : '${strings.dasherize(pluralize(options.name))}',
+          title: '${strings.capitalize(pluralize(options.label))}',
+          type : 'basic',
+          // icon : 'email',
+          link  : '/${strings.dasherize(pluralize(options.label))}'
+       },
+
+        /* Add new menu items here */
+      `
+    );
+    tree.overwrite('src\\app\\mock-api\\common\\navigation\\data.ts', newNavigationFileContent);
+  }
+
 }
 
 

@@ -1,4 +1,4 @@
-import { Component } from '@angular/core';
+import { Component, OnInit } from '@angular/core';
 import { FormBuilder, FormGroup, Validators } from '@angular/forms';
 import { ActivatedRoute, Router } from '@angular/router';
 import { ManageEntityComponent } from 'app/shared/generic-components/manage-entity/manage-entity.component';
@@ -8,8 +8,8 @@ import { <%= classify(name) %> } from '../<%= dasherize(name) %>';
 import { <%= classify(name) %>Service } from '../service/<%= dasherize(name) %>.service';
 
 <% for(let e of entitySchema) { %>
-  <% if(e.inputType === 'relatedEntity') { %>
-    import { <%= pluralize(e.relatedEntityName) %>Service } from '<%= e.relatedEntityPath %>service/<%= dasherize(pluralize(e.relatedEntityName)) %>.service';
+  <% if(e.inputType === 'relatedSelect') { %>
+    import { <%= e.relatedEntityName %>Service } from '<%= e.relatedEntityPath %>service/<%= dasherize(e.relatedEntityName) %>.service';
   <% } %>
 <% } %>
 
@@ -17,9 +17,14 @@ import { <%= classify(name) %>Service } from '../service/<%= dasherize(name) %>.
   selector: 'app-manage-<%= dasherize(name) %>',
   templateUrl: './manage-<%= dasherize(name) %>.component.html',
 })
-export class Manage<%= classify(name) %>Component extends ManageEntityComponent<<%= classify(name) %>> {
+export class Manage<%= classify(name) %>Component extends ManageEntityComponent<<%= classify(name) %>> implements OnInit {
 
     <%= camelize(name) %>FormGroup: FormGroup;
+    <% for(let e of entitySchema) { %>
+        <% if(e.inputType === 'relatedSelect') { %>
+          <%= camelize(pluralize(e.relatedEntityName)) %>: any[] = [];
+        <% } %>
+      <% } %>
 
     constructor(
       protected _globalService: GlobalService,
@@ -28,8 +33,8 @@ export class Manage<%= classify(name) %>Component extends ManageEntityComponent<
 		  protected _router: Router,
       protected _service: <%= classify(name) %>Service,
       <% for(let e of entitySchema) { %>
-        <% if(e.inputType === 'relatedEntity') { %>
-          protected _<%= camelize(e.relatedEntityName) %>Service: <%= pluralize(e.relatedEntityName) %>Service
+        <% if(e.inputType === 'relatedSelect') { %>
+          protected _<%= camelize(e.relatedEntityName) %>Service: <%= e.relatedEntityName %>Service
         <% } %>
       <% } %>
     ) {
@@ -40,4 +45,27 @@ export class Manage<%= classify(name) %>Component extends ManageEntityComponent<
         });
         super(_globalService, _activateRoute, _formBuilder, _router, entityFormGroup, _service, '<%= pluralizeSpanish(label) %>', '<%= label %>');
     }
+
+    ngOnInit(): void {
+      <% for(let e of entitySchema) { %>
+        <% if(e.inputType === 'relatedSelect') { %>
+          this.getAll<%= pluralize(classify(e.relatedEntityName)) %>();
+        <% } %>
+      <% } %>
+    }
+
+    <% for(let e of entitySchema) { %>
+      <% if(e.inputType === 'relatedSelect') { %>
+        getAll<%= pluralize(classify(e.relatedEntityName)) %>() {
+          this._<%= camelize(e.relatedEntityName) %>Service.getAll().subscribe(
+            (response) => {
+              this.<%= camelize(pluralize(e.relatedEntityName)) %> = response.data;
+            },
+            (error) => {
+              this._globalService.openSnackBar('Error al obtener <%= pluralizeSpanish(e.relatedEntityName) %>', 3000,'error');
+            }
+          );
+        }
+      <% } %>
+    <% } %>
 }

@@ -22,11 +22,43 @@
 	</div>
 	<div class="sm:col-span-6 flex flex-col flex-auto p-6 bg-card shadow rounded-2xl overflow-hidden">
 		<!-- Section -->
-		<div class="grid grid-cols-12 gap-5">
-			<div class="col-span-12 sm:col-span-3 text-center sm:text-left">
-				<div class="text-lg font-medium tracking-tight leading-6 truncate">Detalles de la <%= labelize(label) %></div>
-			</div>
+    <% if(searchableList) { %>
+		<div [formGroup]="_searchFormGroup" class="grid grid-cols-11 gap-2" style="direction: rtl">
+      <div class="col-span-1 text-center">
+          <button (click)="makeSearch();" mat-mini-fab style="margin-top: 9px;">
+              <mat-icon aria-label="Example icon-button with a heart icon">search</mat-icon>
+          </button>
+      </div>
+			<div class="col-span-2" style="direction: ltr">
+        <mat-form-field class="w-full" appearance="outline">
+            <mat-label>Termino</mat-label>
+            <input matInput formControlName="searchString">
+        </mat-form-field>
+      </div>
+      <% for (let e in entitySchema) { %>
+        <% if(entitySchema[e].searchable) { %>
+          <div class="col-span-2" style="direction: ltr">
+            <mat-form-field class="w-full" appearance="outline">
+              <mat-label><%= entitySchema[e].label %></mat-label>
+
+                <% if(entitySchema[e].inputType==='text') { %>
+                  <input id='<%= entitySchema[e].name %>' type="text" formControlName="<%= entitySchema[e].name %>" matInput>
+                <% } %>
+
+                <% if(entitySchema[e].inputType==='select') { %>
+                  <mat-select id='<%= entitySchema[e].name %>' formControlName="<%= entitySchema[e].name %>">
+                    <mat-option *ngFor="let option of <%= entitySchema[e].name %>Options" [value]="option.value">
+                      {{ option.label }}
+                    </mat-option>
+                  </mat-select>
+                <% } %>
+
+            </mat-form-field>
+          </div>
+        <% } %>
+        <% } %>
 		</div>
+    <% } %>
 		<div class="flex flex-col flex-auto mt-2 overflow-x-auto">
 				<table
 						class="md:min-w-240 overflow-y-visible"
@@ -55,7 +87,7 @@
 									<mat-icon [routerLink]="'/<%= labelize(pluralizeSpanish(label)) %>/editar/'+<%= camelize(name) %>.id" class="text-on-primary-300">edit</mat-icon>
 							</div>
 						<div class="1/2">
-									<mat-icon (click)="destroy(<%= camelize(name) %>.id)" class="text-red-500">delete</mat-icon>
+									<mat-icon (click)="confirmDestroy(<%= camelize(name) %>.id)" class="text-red-500">delete</mat-icon>
 							</div>
 						</div>
 					</td>
