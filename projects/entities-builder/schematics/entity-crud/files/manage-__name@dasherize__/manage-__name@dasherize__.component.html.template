@@ -11,53 +11,53 @@
                     </div>
                     <div [formGroup]="entityFormGroup" class="grid sm:grid-cols-2 gap-y-1 gap-x-5 w-full mt-8">
 
-                      <% for (let e in entitySchema) { %>
-                      <% if(entitySchema[e].editable) { %>
+                      <% for (let e in entity.fields) { %>
+                      <% if(entity.fields[e].editable) { %>
                         <div class="col-span-1">
                             <mat-form-field class="w-full">
-                                <mat-label><%= entitySchema[e].label %></mat-label>
+                                <mat-label><%= entity.fields[e].label %></mat-label>
 
-                                <% if(entitySchema[e].inputType==='text') { %>
-                                  <input id='<%= entitySchema[e].name %>' type="text" formControlName="<%= entitySchema[e].name %>" matInput>
+                                <% if(entity.fields[e].input_type.name==='text') { %>
+                                  <input id='<%= entity.fields[e].name %>' type="text" formControlName="<%= entity.fields[e].name %>" matInput>
                                 <% } %>
 
-                                <% if(entitySchema[e].inputType==='select') { %>
-                                  <mat-select id='<%= entitySchema[e].name %>' formControlName="<%= entitySchema[e].name %>">
-                                    <mat-option *ngFor="let option of <%= entitySchema[e].name %>Options" [value]="option.value">
+                                <% if(entity.fields[e].input_type.name==='select') { %>
+                                  <mat-select id='<%= entity.fields[e].name %>' formControlName="<%= entity.fields[e].name %>">
+                                    <mat-option *ngFor="let option of <%= entity.fields[e].name %>Options" [value]="option.value">
                                       {{ option.label }}
                                     </mat-option>
                                   </mat-select>
                                 <% } %>
 
-                                <% if(entitySchema[e].inputType==='date') { %>
-                                  <input class="cursor-pointer" (click)="<%= entitySchema[e].name %>_date.open()" matInput [matDatepicker]="<%= entitySchema[e].name %>_date" id='<%= entitySchema[e].name %>' formControlName="<%= entitySchema[e].name %>">
+                                <% if(entity.fields[e].input_type.name==='date') { %>
+                                  <input class="cursor-pointer" (click)="<%= entity.fields[e].name %>_date.open()" matInput [matDatepicker]="<%= entity.fields[e].name %>_date" id='<%= entity.fields[e].name %>' formControlName="<%= entity.fields[e].name %>">
                                   <mat-hint>YYYY-MM-DD</mat-hint>
-                                  <mat-datepicker #<%= entitySchema[e].name %>_date></mat-datepicker>
+                                  <mat-datepicker #<%= entity.fields[e].name %>_date></mat-datepicker>
                                 <% } %>
 
-                                <% if(entitySchema[e].inputType==='textarea') { %>
-                                  <textarea id='<%= entitySchema[e].name %>' formControlName="<%= entitySchema[e].name %>" matInput></textarea>
+                                <% if(entity.fields[e].input_type.name==='textarea') { %>
+                                  <textarea id='<%= entity.fields[e].name %>' formControlName="<%= entity.fields[e].name %>" matInput></textarea>
                                 <% } %>
 
-                                <% if(entitySchema[e].inputType==='checkbox') { %>
-                                  <mat-checkbox id='<%= entitySchema[e].name %>' formControlName="<%= entitySchema[e].name %>"></mat-checkbox>
+                                <% if(entity.fields[e].input_type.name==='checkbox') { %>
+                                  <mat-checkbox id='<%= entity.fields[e].name %>' formControlName="<%= entity.fields[e].name %>"></mat-checkbox>
                                 <% } %>
 
 
-                                <% if(entitySchema[e].inputType==='relatedSelect') { %>
+                                <% if(entity.fields[e].input_type.name==='relatedSelect') { %>
 
-                                  <mat-select id='<%= entitySchema[e].name %>' formControlName="<%= entitySchema[e].name %>">
-                                    <mat-option *ngFor="let option of <%= camelize(pluralize(entitySchema[e].relatedEntityName)) %>" [value]="option.id">
+                                  <mat-select id='<%= entity.fields[e].name %>' formControlName="<%= entity.fields[e].name %>">
+                                    <mat-option *ngFor="let option of <%= camelize(pluralize(entity.fields[e].relatedEntityName)) %>" [value]="option.id">
                                       {{ option.name }}
                                     </mat-option>
                                   </mat-select>
                                 <% } %>
 
-                                <% if(entitySchema[e]?.validations) { %>
-                                  <% if(entitySchema[e]?.validations?.front) { %>
-                                  <mat-error *ngFor="let i of _globalService.errorsLength(entityFormGroup.get('<%= entitySchema[e].name %>'))">
-                                    <ng-container *ngIf="entityFormGroup.get('<%= entitySchema[e].name %>').hasError(i)">
-                                      {{ entityFormGroup.get('<%= entitySchema[e].name %>').errors[i] }}
+                                <% if(entity.fields[e]?.validations) { %>
+                                  <% if(entity.fields[e]?.validations?.front) { %>
+                                  <mat-error *ngFor="let i of _globalService.errorsLength(entityFormGroup.get('<%= entity.fields[e].name %>'))">
+                                    <ng-container *ngIf="entityFormGroup.get('<%= entity.fields[e].name %>').hasError(i)">
+                                      {{ entityFormGroup.get('<%= entity.fields[e].name %>').errors[i] }}
                                     </ng-container>
                                   </mat-error>
                                   <% } %>

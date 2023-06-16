@@ -8,7 +8,7 @@ import { MatSnackBar } from '@angular/material/snack-bar';
 import { <%= classify(name) %> } from '../<%= dasherize(name) %>';
 import { <%= classify(name) %>Service } from '../service/<%= dasherize(name) %>.service';
 
-<% for(let e of entitySchema) { %>
+<% for(let e of entity.fields) { %>
   <% if(e.inputType === 'relatedSelect') { %>
     import { <%= e.relatedEntityName %>Service } from '<%= e.relatedEntityPath %>service/<%= dasherize(e.relatedEntityName) %>.service';
   <% } %>
@@ -21,7 +21,7 @@ import { <%= classify(name) %>Service } from '../service/<%= dasherize(name) %>.
 export class Manage<%= classify(name) %>Component extends ManageEntityComponent<<%= classify(name) %>> implements OnInit {
 
     <%= camelize(name) %>FormGroup: FormGroup;
-    <% for(let e of entitySchema) { %>
+    <% for(let e of entity.fields) { %>
         <% if(e.inputType === 'relatedSelect') { %>
           <%= camelize(pluralize(e.relatedEntityName)) %>: any[] = [];
         <% } %>
@@ -34,29 +34,29 @@ export class Manage<%= classify(name) %>Component extends ManageEntityComponent<
 		  protected _router: Router,
       protected _matSnackBar: MatSnackBar,
       protected _service: <%= classify(name) %>Service,
-      <% for(let e of entitySchema) { %>
+      <% for(let e of entity.fields) { %>
         <% if(e.inputType === 'relatedSelect') { %>
           protected _<%= camelize(e.relatedEntityName) %>Service: <%= e.relatedEntityName %>Service
         <% } %>
       <% } %>
     ) {
         const entityFormGroup = _formBuilder.group({
-          <% for(let e in entitySchema) { %> <% if(entitySchema[e].editable) { %>
-            <%= entitySchema[e].name %>: [<% if(entitySchema[e]?.validations?.front) { %>, <%= entitySchema[e]?.validations?.front %><% } %>],
+          <% for(let e in entity.fields) { %> <% if(entity.fields[e].editable) { %>
+            <%= entity.fields[e].name %>: [<% if(entity.fields[e]?.validations?.front) { %>, <%= entity.fields[e]?.validations?.front %><% } %>],
           <% } %><% } %>
         });
         super(_globalService, _activateRoute, _formBuilder, _router, _matSnackBar, entityFormGroup, _service, '<%= pluralizeSpanish(label) %>', '<%= label %>');
     }
 
     ngOnInit(): void {
-      <% for(let e of entitySchema) { %>
+      <% for(let e of entity.fields) { %>
         <% if(e.inputType === 'relatedSelect') { %>
           this.getAll<%= pluralize(classify(e.relatedEntityName)) %>();
         <% } %>
       <% } %>
     }
 
-    <% for(let e of entitySchema) { %>
+    <% for(let e of entity.fields) { %>
       <% if(e.inputType === 'relatedSelect') { %>
         getAll<%= pluralize(classify(e.relatedEntityName)) %>() {
           this._<%= camelize(e.relatedEntityName) %>Service.getAll().subscribe(

@@ -24,19 +24,19 @@
   <% if(searchableList) { %>
 		<div [formGroup]="_searchFormGroup" class="grid grid-cols-11 gap-2 items-center search-form">
 
-      <% for (let e in entitySchema) { %>
-        <% if(entitySchema[e].searchable) { %>
+      <% for (let e in entity.fields) { %>
+        <% if(entity.fields[e].searchable) { %>
           <div class="col-span-2">
             <mat-form-field class="w-full" appearance="outline">
-              <mat-label><%= entitySchema[e].label %></mat-label>
+              <mat-label><%= entity.fields[e].label %></mat-label>
 
-                <% if(entitySchema[e].inputType==='text') { %>
-                  <input id='<%= entitySchema[e].name %>' type="text" formControlName="<%= entitySchema[e].name %>" matInput>
+                <% if(entity.fields[e].inputType==='text') { %>
+                  <input id='<%= entity.fields[e].name %>' type="text" formControlName="<%= entity.fields[e].name %>" matInput>
                 <% } %>
 
-                <% if(entitySchema[e].inputType==='select') { %>
-                  <mat-select id='<%= entitySchema[e].name %>' formControlName="<%= entitySchema[e].name %>">
-                    <mat-option *ngFor="let option of <%= entitySchema[e].name %>Options" [value]="option.value">
+                <% if(entity.fields[e].inputType==='select') { %>
+                  <mat-select id='<%= entity.fields[e].name %>' formControlName="<%= entity.fields[e].name %>">
+                    <mat-option *ngFor="let option of <%= entity.fields[e].name %>Options" [value]="option.value">
                       {{ option.label }}
                     </mat-option>
                   </mat-select>
@@ -68,13 +68,13 @@
 						mat-table
 						[dataSource]="dataSource">
 
-        <% for(let e in entitySchema) { %>
-          <% if(entitySchema[e].visible) { %>
-            <ng-container matColumnDef="<%= entitySchema[e].name %>">
-              <th mat-header-cell *matHeaderCellDef><%= entitySchema[e].label %></th>
+        <% for(let e in entity.fields) { %>
+          <% if(entity.fields[e].visible) { %>
+            <ng-container matColumnDef="<%= entity.fields[e].name %>">
+              <th mat-header-cell *matHeaderCellDef><%= entity.fields[e].label %></th>
               <td data-label="Dirección" mat-cell *matCellDef="let <%= camelize(name) %>" class="px-4">
                 <span class="font-medium">
-                  {{<%= camelize(name) %>.<%= entitySchema[e].name %> || "-"}}
+                  {{<%= camelize(name) %>.<%= entity.fields[e].name %> || "-"}}
                 </span>
               </td>
             </ng-container>

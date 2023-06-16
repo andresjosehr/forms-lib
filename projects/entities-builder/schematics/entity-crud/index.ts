@@ -36,7 +36,10 @@ export function entityCrudGenerator(options: Options): Rule {
         labelize: labelize,
         pluralizeSpanish: pluralizeSpanish,
         pluralize: pluralize,
-        ...entity
+        name: entity.name,
+        label: entity.label,
+        searchableList: entity.searchableList,
+        entity
       }),
       move(normalize(`/${entity.frontend_path}/${pluralize(strings.dasherize(entity.name))}`))
     ]);
@@ -50,7 +53,6 @@ export function entityCrudGenerator(options: Options): Rule {
 
 
 function checkForRelatedEntities(tree: Tree, entity: EntityBuilderSchema): EntityBuilderSchema {
-  console.log(typeof entity)
   entity.fields = entity.fields.map((field) => {
     if(field.inputType === 'relatedSelect') {
 
@@ -63,7 +65,6 @@ function checkForRelatedEntities(tree: Tree, entity: EntityBuilderSchema): Entit
           relatedEntityPath = path;
         }
       });
-      console.log(1)
       relatedEntityPath = relatedEntityPath.replace(entityName+'.ts', '').replace('/src/', '');
       return {
         ...field,
@@ -85,10 +86,8 @@ function checkNewRoute(tree: Tree, entity: EntityBuilderSchema): void{
    const routingModuleContent = (routingModule as any).toString();
 
    // Remove the first path, example: if string is 'src/app', remove 'src/'
-   console.log(2)
    const routeBasePath = entity.frontend_path.replace(/.*\//, '');
    if (!routingModuleContent.includes(`path: '${strings.dasherize(pluralize(entity.label))}',`)) {
-    console.log(3)
      const newRoutingModuleContent = routingModuleContent.replace('/* Add new routes here */',
        `/* Add new routes here */
          { path: '${strings.dasherize(pluralize(entity.label))}', loadChildren: () => import('${routeBasePath}/${pluralize(strings.dasherize(entity.name))}/${pluralize(strings.dasherize(entity.name))}.module').then(m => m.${strings.classify(pluralize(entity.name))}Module) },
@@ -107,7 +106,6 @@ function checkMenu(tree: Tree, options: EntityBuilderSchema): void {
   if (navigationFile && !navigationFile.toString().includes(`id   : '${strings.dasherize(pluralize(options.name))}',`)) {
 
     const navigationFileContent = navigationFile.toString();
-    console.log(4)
     const newNavigationFileContent = navigationFileContent.replace('/* Add new menu items here */',
       `{
           id   : '${strings.dasherize(pluralize(options.name))}',
@@ -133,7 +131,6 @@ function pluralize(word: string): string {
 // Make kebab case but sapce instead of underscore and first letter in uppercase
 function labelize(word: string): string {
   word = strings.dasherize(word);
-  console.log(5)
   return word.replace(/([a-z])([A-Z])/g, '$1 $2')
     .replace(/\s+/g, '-')
     .toLowerCase();

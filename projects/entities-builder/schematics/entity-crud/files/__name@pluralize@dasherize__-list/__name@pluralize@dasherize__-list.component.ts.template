@@ -24,7 +24,7 @@ import { <%= classify(name) %>Service } from '../service/<%= dasherize(name) %>.
 })
 export class <%= pluralize(classify(name)) %>ListComponent extends EntitiesListComponent<<%= classify(name) %>>{
 
-  columns: Array<string> = [<% for(let e in entitySchema) { %><% if(entitySchema[e].visible) { %><% if(e!=0) { %>,<% } %> '<%=entitySchema[e].name%>'<% } %><% } %>, 'actions'];
+  columns: Array<string> = [<% for(let e in entity.fields) { %><% if(entity.fields[e].visible) { %><% if(e!=0) { %>,<% } %> '<%=entity.fields[e].name%>'<% } %><% } %>, 'actions'];
 
   constructor(
     protected _activatedRoute: ActivatedRoute,
@@ -38,8 +38,8 @@ export class <%= pluralize(classify(name)) %>ListComponent extends EntitiesListC
   ) {
     const searchFormGroup = _formBuilder.group({
         searchString: [],
-        <% for(let e in entitySchema) { %> <% if(entitySchema[e].searchable) { %>
-            <%= entitySchema[e].name %>: [],
+        <% for(let e in entity.fields) { %> <% if(entity.fields[e].searchable) { %>
+            <%= entity.fields[e].name %>: [],
           <% } %><% } %>
     });
     super(_activatedRoute, _router, _formBuilder, _globalService, _userService, _fuseConfirmationService, _matSnackBar, searchFormGroup, _service, '<%= pluralizeSpanish(label) %>', '<%= label %>');
