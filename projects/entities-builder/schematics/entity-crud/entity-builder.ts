@@ -1,9 +1,9 @@
 export interface EntityBuilderSchema {
   name: string,
-  path: string,
+  frontend_path: string,
   label: string,
   searchableList?: boolean,
-  entitySchema: [
+  fields: [
     {
       name: string,
       label: string,

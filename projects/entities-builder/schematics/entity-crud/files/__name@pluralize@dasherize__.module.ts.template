@@ -5,6 +5,7 @@ import { Route, RouterModule } from '@angular/router';
 import { <%= pluralize(classify(name)) %>ListComponent } from './<%= pluralize(dasherize(name)) %>-list/<%= pluralize(dasherize(name)) %>-list.component';
 import { Manage<%= classify(name) %>Module } from './manage-<%= dasherize(name) %>/manage-<%= dasherize(name) %>.module';
 import { Manage<%= classify(name) %>Component } from './manage-<%= dasherize(name) %>/manage-<%= dasherize(name) %>.component';
+import { MatSnackBarModule } from '@angular/material/snack-bar';
 
 const routes: Route[] = [
     {
@@ -32,7 +33,11 @@ const routes: Route[] = [
     CommonModule,
     RouterModule.forChild(routes),
     <%= pluralize(classify(name)) %>ListModule,
-    Manage<%= classify(name) %>Module
+    Manage<%= classify(name) %>Module,
+    MatSnackBarModule
+  ],
+  providers: [
+      MatSnackBarModule
   ]
 })
 export class <%= pluralize(classify(name)) %>Module { }

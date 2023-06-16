@@ -20,24 +20,13 @@
 			</fuse-alert>
 		</div>
 	</div>
-	<div class="sm:col-span-6 flex flex-col flex-auto p-6 bg-card shadow rounded-2xl overflow-hidden">
-		<!-- Section -->
-    <% if(searchableList) { %>
-		<div [formGroup]="_searchFormGroup" class="grid grid-cols-11 gap-2" style="direction: rtl">
-      <div class="col-span-1 text-center">
-          <button (click)="makeSearch();" mat-mini-fab style="margin-top: 9px;">
-              <mat-icon aria-label="Example icon-button with a heart icon">search</mat-icon>
-          </button>
-      </div>
-			<div class="col-span-2" style="direction: ltr">
-        <mat-form-field class="w-full" appearance="outline">
-            <mat-label>Termino</mat-label>
-            <input matInput formControlName="searchString">
-        </mat-form-field>
-      </div>
+
+  <% if(searchableList) { %>
+		<div [formGroup]="_searchFormGroup" class="grid grid-cols-11 gap-2 items-center search-form">
+
       <% for (let e in entitySchema) { %>
         <% if(entitySchema[e].searchable) { %>
-          <div class="col-span-2" style="direction: ltr">
+          <div class="col-span-2">
             <mat-form-field class="w-full" appearance="outline">
               <mat-label><%= entitySchema[e].label %></mat-label>
 
@@ -57,8 +46,22 @@
           </div>
         <% } %>
         <% } %>
+        <div class="col-span-2">
+          <mat-form-field class="w-full" appearance="outline">
+              <mat-label>Termino</mat-label>
+              <input matInput formControlName="searchString">
+          </mat-form-field>
+        </div>
+        <div class="col-span-1 text-left">
+          <button (click)="makeSearch();" mat-mini-fab>
+              <mat-icon aria-label="Example icon-button with a heart icon">search</mat-icon>
+          </button>
+        </div>
 		</div>
     <% } %>
+    <hr class="my-3">
+	<div class="sm:col-span-6 flex flex-col flex-auto p-6 bg-card shadow rounded-2xl overflow-hidden">
+		<!-- Section -->
 		<div class="flex flex-col flex-auto mt-2 overflow-x-auto">
 				<table
 						class="md:min-w-240 overflow-y-visible"

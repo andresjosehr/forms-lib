@@ -12,8 +12,15 @@
       "type": "string",
       "format": "path",
       "description": "The path to create the component.",
-      "x-prompt": "What path would you like to use for the component?",
       "default": "src/app"
+    },
+    "file": {
+      "type": "string",
+      "description": "The file name to create the component."
+    },
+    "entity": {
+      "type": "string",
+      "description": "The entity object to create the component."
     }
    },
   "required": []

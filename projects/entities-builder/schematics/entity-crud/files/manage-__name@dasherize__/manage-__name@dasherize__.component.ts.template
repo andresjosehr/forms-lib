@@ -3,6 +3,7 @@ import { FormBuilder, FormGroup, Validators } from '@angular/forms';
 import { ActivatedRoute, Router } from '@angular/router';
 import { ManageEntityComponent } from 'app/shared/generic-components/manage-entity/manage-entity.component';
 import { GlobalService } from 'app/shared/services/global/global.service';
+import { MatSnackBar } from '@angular/material/snack-bar';
 
 import { <%= classify(name) %> } from '../<%= dasherize(name) %>';
 import { <%= classify(name) %>Service } from '../service/<%= dasherize(name) %>.service';
@@ -31,6 +32,7 @@ export class Manage<%= classify(name) %>Component extends ManageEntityComponent<
 		  protected _activateRoute: ActivatedRoute,
 		  protected _formBuilder: FormBuilder,
 		  protected _router: Router,
+      protected _matSnackBar: MatSnackBar,
       protected _service: <%= classify(name) %>Service,
       <% for(let e of entitySchema) { %>
         <% if(e.inputType === 'relatedSelect') { %>
@@ -43,7 +45,7 @@ export class Manage<%= classify(name) %>Component extends ManageEntityComponent<
             <%= entitySchema[e].name %>: [<% if(entitySchema[e]?.validations?.front) { %>, <%= entitySchema[e]?.validations?.front %><% } %>],
           <% } %><% } %>
         });
-        super(_globalService, _activateRoute, _formBuilder, _router, entityFormGroup, _service, '<%= pluralizeSpanish(label) %>', '<%= label %>');
+        super(_globalService, _activateRoute, _formBuilder, _router, _matSnackBar, entityFormGroup, _service, '<%= pluralizeSpanish(label) %>', '<%= label %>');
     }
 
     ngOnInit(): void {

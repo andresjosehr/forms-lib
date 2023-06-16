@@ -5,13 +5,22 @@ import { UserService } from 'app/core/user/user.service';
 import { EntitiesListComponent } from 'app/shared/generic-components/entities-list/entities-list.component';
 import { GlobalService } from 'app/shared/services/global/global.service';
 import { FuseConfirmationService } from '@fuse/services/confirmation';
+import { MatSnackBar } from '@angular/material/snack-bar';
 
 import { <%= classify(name) %> } from '../<%= dasherize(name) %>';
 import { <%= classify(name) %>Service } from '../service/<%= dasherize(name) %>.service';
 
 @Component({
   selector: 'app-<%= pluralize(dasherize(name)) %>-list',
-  templateUrl: './<%= pluralize(dasherize(name)) %>-list.component.html'
+  templateUrl: './<%= pluralize(dasherize(name)) %>-list.component.html',
+  styles: [`
+    ::ng-deep .search-form .mat-mdc-text-field-wrapper{
+        background-color: #fff;
+    }
+    ::ng-deep .search-form .mat-mdc-form-field-subscript-wrapper{
+        display: none;
+    }
+  `]
 })
 export class <%= pluralize(classify(name)) %>ListComponent extends EntitiesListComponent<<%= classify(name) %>>{
 
@@ -25,6 +34,7 @@ export class <%= pluralize(classify(name)) %>ListComponent extends EntitiesListC
     protected _userService: UserService,
     protected _service: <%= classify(name) %>Service,
     protected _fuseConfirmationService: FuseConfirmationService,
+    protected _matSnackBar: MatSnackBar,
   ) {
     const searchFormGroup = _formBuilder.group({
         searchString: [],
@@ -32,7 +42,7 @@ export class <%= pluralize(classify(name)) %>ListComponent extends EntitiesListC
             <%= entitySchema[e].name %>: [],
           <% } %><% } %>
     });
-    super(_activatedRoute, _router, _formBuilder, _globalService, _userService, _fuseConfirmationService, searchFormGroup, _service, '<%= pluralizeSpanish(label) %>', '<%= label %>');
+    super(_activatedRoute, _router, _formBuilder, _globalService, _userService, _fuseConfirmationService, _matSnackBar, searchFormGroup, _service, '<%= pluralizeSpanish(label) %>', '<%= label %>');
   }
 }
 
