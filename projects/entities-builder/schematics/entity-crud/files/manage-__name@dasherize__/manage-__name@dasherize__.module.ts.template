@@ -28,6 +28,7 @@ import {DateModule} from 'app/shared/date.module';
     ReactiveFormsModule,
     FormsModule,
     MatButtonModule,
+    MatRadioModule,
   ]
 })
 export class Manage<%= classify(name) %>Module { }

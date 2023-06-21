@@ -21,13 +21,19 @@
                                   <input id='<%= entity.fields[e].name %>' type="text" formControlName="<%= entity.fields[e].name %>" matInput>
                                 <% } %>
 
+                                <% if(entity.fields[e].input_type.name==='number') { %>
+                                  <input id='<%= entity.fields[e].name %>' type="number" formControlName="<%= entity.fields[e].name %>" matInput>
+                                <% } %>
+
                                 <% if(entity.fields[e].input_type.name==='select') { %>
                                   <mat-select id='<%= entity.fields[e].name %>' formControlName="<%= entity.fields[e].name %>">
-                                    <mat-option *ngFor="let option of <%= entity.fields[e].name %>Options" [value]="option.value">
-                                      {{ option.label }}
-                                    </mat-option>
+
+                                    <% for (let i in entity.fields[e].options) { %>
+                                      <mat-option value="<%= entity.fields[e].options[i].name %>"><%= entity.fields[e].options[i].name %> </mat-option>
+                                    <% } %>
+
                                   </mat-select>
-                                <% } %>
+                                  <% } %>
 
                                 <% if(entity.fields[e].input_type.name==='date') { %>
                                   <input class="cursor-pointer" (click)="<%= entity.fields[e].name %>_date.open()" matInput [matDatepicker]="<%= entity.fields[e].name %>_date" id='<%= entity.fields[e].name %>' formControlName="<%= entity.fields[e].name %>">
@@ -62,6 +68,14 @@
                                   </mat-error>
                                   <% } %>
                                 <% } %>
+
+                                <mat-radio-group
+                                  aria-labelledby="example-radio-group-label"
+                                  class="example-radio-group">
+                                  <mat-radio-button class="example-radio-button" *ngFor="let season of seasons" [value]="season">
+                                    {{season}}
+                                  </mat-radio-button>
+                                </mat-radio-group>
 
                             </mat-form-field>
                         </div>
