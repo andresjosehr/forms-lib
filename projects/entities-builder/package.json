@@ -6,18 +6,25 @@
     "build": "cd ../../ && npm run build && cd projects/entities-builder && tsc -p tsconfig.schematics.json",
     "postbuild": "copyfiles schematics/*/schema.json schematics/*/files/** schematics/collection.json ../../dist/entities-builder/",
     "b": "tsc -p tsconfig.schematics.json && copyfiles schematics/*/schema.json schematics/*/files/** schematics/collection.json ../../dist/entities-builder/",
-    "make-publish": "npm unpublish --registry http://localhost:4873 --force && npm publish --registry http://localhost:4873"
+    "make-publish": "npm unpublish --registry http://localhost:4873 --force && npm publish --registry http://localhost:4873",
+    "packagr": "ng-packagr -p ng-package.json"
   },
   "schematics": "./schematics/collection.json",
   "ng-add": {
     "save": "devDependencies"
   },
   "peerDependencies": {
-    "@angular/common": "^15.0.0",
-    "@angular/core": "^15.0.0"
+    "@angular/common": "^16.0.0",
+    "@angular/core": "^16.0.0"
   },
   "dependencies": {
+    "@angular-devkit/schematics": "^16.1.0",
+    "axios": "^1.4.0",
     "copyfiles": "^2.4.1",
-    "tslib": "^2.3.0"
+    "tslib": "^2.3.0",
+    "webpack": "^5.87.0"
+  },
+  "devDependencies": {
+    "ng-packagr": "^16.1.0"
   }
 }

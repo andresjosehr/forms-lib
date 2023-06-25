@@ -1,7 +1,9 @@
-export interface EntityBuilderSchema {
+export interface Entity {
   name: string,
   frontend_path: string,
   label: string,
+  built_creation: boolean | 0 | 1,
+  built_edition: boolean | 0 | 1,
   searchableList?: boolean,
   fields: [
     {

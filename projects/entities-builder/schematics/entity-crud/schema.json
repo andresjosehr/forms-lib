@@ -4,23 +4,13 @@
   "title": "The entity schema",
   "type": "object",
   "properties": {
-    "name": {
-      "description": "The name of the component.",
-      "type": "string"
-    },
-    "path": {
-      "type": "string",
-      "format": "path",
-      "description": "The path to create the component.",
-      "default": "src/app"
-    },
-    "file": {
-      "type": "string",
-      "description": "The file name to create the component."
-    },
     "entity": {
+      "type": "number",
+      "description": "The entity ID of the entity."
+    },
+    "api": {
       "type": "string",
-      "description": "The entity object to create the component."
+      "description": "Api url to get the entity."
     }
    },
   "required": []

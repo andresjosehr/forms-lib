@@ -1,0 +1,7 @@
+/*
+ * Public API Surface of entities-builder
+ */
+export * from './schematics/entity-crud/index';
+export * from './schematics/entity-crud/options';
+export * from './schematics/entity-crud/entity-builder';
+//# sourceMappingURL=data:application/json;base64,eyJ2ZXJzaW9uIjozLCJmaWxlIjoicHVibGljX2FwaS5qcyIsInNvdXJjZVJvb3QiOiIiLCJzb3VyY2VzIjpbIi4uLy4uL3B1YmxpY19hcGkudHMiXSwibmFtZXMiOltdLCJtYXBwaW5ncyI6IkFBQUE7O0dBRUc7QUFFSCxjQUFjLGdDQUFnQyxDQUFDO0FBQy9DLGNBQWMsa0NBQWtDLENBQUM7QUFDakQsY0FBYyx5Q0FBeUMsQ0FBQyIsInNvdXJjZXNDb250ZW50IjpbIi8qXG4gKiBQdWJsaWMgQVBJIFN1cmZhY2Ugb2YgZW50aXRpZXMtYnVpbGRlclxuICovXG5cbmV4cG9ydCAqIGZyb20gJy4vc2NoZW1hdGljcy9lbnRpdHktY3J1ZC9pbmRleCc7XG5leHBvcnQgKiBmcm9tICcuL3NjaGVtYXRpY3MvZW50aXR5LWNydWQvb3B0aW9ucyc7XG5leHBvcnQgKiBmcm9tICcuL3NjaGVtYXRpY3MvZW50aXR5LWNydWQvZW50aXR5LWJ1aWxkZXInO1xuIl19
