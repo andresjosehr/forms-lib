@@ -39,7 +39,7 @@ export class <%= pluralize(classify(name)) %>ListComponent extends EntitiesListC
     const searchFormGroup = _formBuilder.group({
         searchString: [],
         <% for(let e in entity.fields) { %> <% if(entity.fields[e].searchable) { %>
-            <%= entity.fields[e].name %>: [],
+            <%= entity.fields[e].name %>: [], // <%= entity.fields[e].code %>
           <% } %><% } %>
     });
     super(_activatedRoute, _router, _formBuilder, _globalService, _userService, _fuseConfirmationService, _matSnackBar, searchFormGroup, _service, '<%= pluralizeSpanish(label) %>', '<%= label %>');

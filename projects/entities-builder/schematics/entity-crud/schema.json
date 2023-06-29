@@ -11,6 +11,12 @@
     "api": {
       "type": "string",
       "description": "Api url to get the entity."
+    },
+    "delete": {
+      "type": "boolean",
+      "description": "Api url to delete the entity.",
+      "default": false
+
     }
    },
   "required": []

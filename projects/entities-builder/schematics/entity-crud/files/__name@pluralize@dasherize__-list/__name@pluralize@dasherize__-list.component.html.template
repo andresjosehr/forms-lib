@@ -26,6 +26,7 @@
 
       <% for (let e in entity.fields) { %>
         <% if(entity.fields[e].searchable) { %>
+          <!-- <%= entity.fields[e].code %> search field -->
           <div class="col-span-2">
             <mat-form-field class="w-full" appearance="outline">
               <mat-label><%= entity.fields[e].label %></mat-label>
@@ -70,6 +71,7 @@
 
         <% for(let e in entity.fields) { %>
           <% if(entity.fields[e].visible) { %>
+            <!-- <%= entity.fields[e].code %> column -->
             <ng-container matColumnDef="<%= entity.fields[e].name %>">
               <th mat-header-cell *matHeaderCellDef><%= entity.fields[e].label %></th>
               <td data-label="Dirección" mat-cell *matCellDef="let <%= camelize(name) %>" class="px-4">

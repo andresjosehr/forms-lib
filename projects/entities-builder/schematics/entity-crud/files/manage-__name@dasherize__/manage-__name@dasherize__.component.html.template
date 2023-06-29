@@ -13,6 +13,7 @@
 
                       <% for (let e in entity.fields) { %>
                       <% if(entity.fields[e].editable) { %>
+                      <!-- <%= entity.fields[e].code %> -->
                         <div class="col-span-1">
                             <mat-form-field class="w-full">
                                 <mat-label><%= entity.fields[e].label %></mat-label>

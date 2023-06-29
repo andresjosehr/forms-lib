@@ -1,4 +1,4 @@
-interface Field {
+export interface Field {
   id: number;
   code: string;
   name: string;
@@ -42,9 +42,26 @@ interface Field {
     };
     related_entity: any;
   };
+  validations: Validation[],
+  validations_string?: string;
   options: any[];
 }
 
+export interface Validation {
+  id: number;
+  name: string;
+  label: string;
+  extra_info: number;
+  front_validation: number;
+  back_validation: number;
+  created_at: null;
+  updated_at: null;
+  pivot: {
+    field_id: number;
+    validation_id: number;
+    value: string;
+  };
+}
 export interface Entity {
   id: number;
   code: string;

@@ -3,6 +3,7 @@ import { Options } from './options';
 import { Entity } from './entity.interface';
 import axios from 'axios';
 import { createEntity } from './create-entity';
+import { editEntity } from './edit-entity';
 
 export function entityCrudGenerator(options: Options) {
   return async (tree: Tree, context: SchematicContext) => {
@@ -21,8 +22,13 @@ export function entityCrudGenerator(options: Options) {
 }
 
 function handleExecution(entity: Entity, tree: Tree, context: SchematicContext){
+
   if(!entity.built_creation){
     return createEntity(entity, tree, context);
   }
-  return createEntity(entity, tree, context);
+
+  if(entity.fields.some(field => field.built_edition) || entity.built_edition){
+    return editEntity(entity, tree, context);
+  }
+  return tree;
 }

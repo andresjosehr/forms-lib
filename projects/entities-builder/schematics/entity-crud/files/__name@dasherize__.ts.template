@@ -1,5 +1,5 @@
 export interface <%= classify(name) %> {
   <% for(let e in entity.fields) { %>
-    <%= entity.fields[e].name %><% if(entity.fields[e].required) { %>?<% } %>: <%= entity.fields[e].field_type.name %>;
+    <%= entity.fields[e].name %><% if(entity.fields[e].required) { %>?<% } %>: <%= entity.fields[e].field_type.name %>; // <%= entity.fields[e].code %>
   <% } %>
 }
