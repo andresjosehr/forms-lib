@@ -117,13 +117,15 @@ export function checkMenu(tree: Tree, options: Entity): void {
 
     const newNavigationFileContent = navigationFileContent.replace(
       '/* Add new menu items here */',
-      `{
+      `// Begin ${options.code}
+      {
          id   : '${strings.dasherize(pluralize(options.name))}',
          title: '${strings.capitalize(pluralizeSpanish(options.label))}',
          type : 'basic',
          // icon : 'email',
          link  : '/${strings.dasherize(pluralizeSpanish(options.label))}'
       },
+      // End ${options.code}
 
        /* Add new menu items here */
      `

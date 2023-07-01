@@ -76,7 +76,12 @@
               <th mat-header-cell *matHeaderCellDef><%= entity.fields[e].label %></th>
               <td data-label="Dirección" mat-cell *matCellDef="let <%= camelize(name) %>" class="px-4">
                 <span class="font-medium">
-                  {{<%= camelize(name) %>.<%= entity.fields[e].name %> || "-"}}
+                  <% if(entity.fields[e].input_type.name !=='file') { %>
+                    {{<%= camelize(name) %>.<%= entity.fields[e].name %> || "-"}}
+                  <% } %>
+                  <% if(entity.fields[e].input_type.name ==='file') { %>
+                    {{getFileCounts(<%= camelize(name) %>.<%= entity.fields[e].name %>)}}
+                  <% } %>
                 </span>
               </td>
             </ng-container>

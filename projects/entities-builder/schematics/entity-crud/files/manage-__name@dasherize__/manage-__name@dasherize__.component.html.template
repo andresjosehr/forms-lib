@@ -14,7 +14,16 @@
                       <% for (let e in entity.fields) { %>
                       <% if(entity.fields[e].editable) { %>
                       <!-- <%= entity.fields[e].code %> -->
+
+                      <% if(entity.fields[e].input_type.name!=='file') { %>
                         <div class="col-span-1">
+                      <% } %>
+
+                      <% if(entity.fields[e].input_type.name==='file') { %>
+                        <div class="col-span-2">
+                      <% } %>
+
+                          <% if(entity.fields[e].input_type.name!=='radio' && entity.fields[e].input_type.name!=='checkbox' && entity.fields[e].input_type.name!=='file') { %>
                             <mat-form-field class="w-full">
                                 <mat-label><%= entity.fields[e].label %></mat-label>
 
@@ -46,9 +55,9 @@
                                   <textarea id='<%= entity.fields[e].name %>' formControlName="<%= entity.fields[e].name %>" matInput></textarea>
                                 <% } %>
 
-                                <% if(entity.fields[e].input_type.name==='checkbox') { %>
+                                <!-- <% if(entity.fields[e].input_type.name==='checkbox') { %>
                                   <mat-checkbox id='<%= entity.fields[e].name %>' formControlName="<%= entity.fields[e].name %>"></mat-checkbox>
-                                <% } %>
+                                <% } %> -->
 
 
                                 <% if(entity.fields[e].input_type.name==='relatedSelect') { %>
@@ -60,19 +69,42 @@
                                   </mat-select>
                                 <% } %>
 
-                                <% if(entity.fields[e]?.validations) { %>
-                                  <% if(entity.fields[e]?.validations?.front) { %>
                                   <mat-error *ngFor="let i of _globalService.errorsLength(entityFormGroup.get('<%= entity.fields[e].name %>'))">
                                     <ng-container *ngIf="entityFormGroup.get('<%= entity.fields[e].name %>').hasError(i)">
                                       {{ entityFormGroup.get('<%= entity.fields[e].name %>').errors[i] }}
                                     </ng-container>
                                   </mat-error>
-                                  <% } %>
-                                <% } %>
-
 
 
                             </mat-form-field>
+                          <% } %>
+
+                            <% if(entity.fields[e].input_type.name==='radio') { %>
+                              <div>
+                                  <div class="font-medium"><%= entity.fields[e].label %></div>
+                                  <mat-radio-group aria-label="Selecciona una opción">
+                                    <% for (let i in entity.fields[e].options) { %>
+                                      <mat-radio-button value="<%= entity.fields[e].options[i].name %>"><%= entity.fields[e].options[i].name %></mat-radio-button>
+                                    <% } %>
+                                  </mat-radio-group>
+                              </div>
+                            <% } %>
+
+                            <% if(entity.fields[e].input_type.name==='checkbox') { %>
+                              <div>
+                                  <div class="font-medium"><%= entity.fields[e].label %></div>
+                                  <div aria-label="Selecciona">
+                                      <mat-checkbox id='<%= entity.fields[e].name %>' formControlName="<%= entity.fields[e].name %>"></mat-checkbox>
+                                    </div>
+                              </div>
+                            <% } %>
+
+
+                            <% if(entity.fields[e].input_type.name==='file') { %>
+                              <file-input [label]='"<%= entity.fields[e].label %>"' [files]="entityFormGroup.get('<%= entity.fields[e].name %>')"></file-input>
+                            <% } %>
+
+
                         </div>
                       <% } %>
                       <% } %>

@@ -44,6 +44,13 @@ export class <%= pluralize(classify(name)) %>ListComponent extends EntitiesListC
     });
     super(_activatedRoute, _router, _formBuilder, _globalService, _userService, _fuseConfirmationService, _matSnackBar, searchFormGroup, _service, '<%= pluralizeSpanish(label) %>', '<%= label %>');
   }
+
+  getFileCounts(files: string): number{
+    if(!files){
+      return 0
+    }
+    return JSON.parse(files).length
+  }
 }
 
 

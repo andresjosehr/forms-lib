@@ -1,29 +1,18 @@
-import {
-  Tree,
-  apply,
-  url,
-  applyTemplates,
-  move,
-  mergeWith,
-  SchematicContext,
-} from '@angular-devkit/schematics';
-import { strings, normalize } from '@angular-devkit/core';
+import { Tree, SchematicContext } from '@angular-devkit/schematics';
+import { strings } from '@angular-devkit/core';
 import { Entity } from './entity.interface';
-import { labelize, pluralize, pluralizeSpanish } from './global';
-import { checkMenu } from './create-entity';
-import { buildValidations, checkNewRoute } from './create-entity';
+import { pluralize, pluralizeSpanish } from './global';
 
-export function editEntity(
+
+export function deleteEntity(
   entity: Entity,
   tree: Tree,
   context: SchematicContext
 ): Tree {
+  context
 
-  console.log("Entro en edición");
-
-  checkNewRoute(tree, entity);
-  checkMenu(tree, entity);
-  entity.fields = buildValidations(entity.fields);
+  tree = deleteRoute(tree, entity);
+  tree = deleteMenu(tree, entity);
 
   const path =  `${entity.frontend_path}/${pluralize(strings.dasherize(entity.name))}/`;
 
@@ -33,23 +22,54 @@ export function editEntity(
 
   tree.delete(path);
 
-  const templateSource = apply(url('./files'), [
-    applyTemplates({
-      classify: strings.classify,
-      dasherize: strings.dasherize,
-      capitalize: strings.capitalize,
-      camelize: strings.camelize,
-      labelize: labelize,
-      pluralizeSpanish: pluralizeSpanish,
-      pluralize: pluralize,
-      name: entity.name,
-      label: entity.label,
-      searchableList: entity.searchable_list,
-      entity,
-    }),
-    move(normalize(path)),
-  ]);
+  // Sea
 
-  return mergeWith(templateSource)(tree, context) as Tree;
+  return tree;
 }
+
+
+function deleteRoute(tree: Tree, entity: Entity) {
+
+  const routingModule = tree.read('src\\app\\app.routes.ts');
+  const routingModuleContent = (routingModule as any).toString();
+  const routeBasePath = entity.frontend_path.replace(/.*\//, '');
+
+  const strToDelete = `{ path: '${strings.dasherize(pluralizeSpanish(entity.label))}', loadChildren: () => import('${routeBasePath}/${pluralize(strings.dasherize(entity.name))}/${pluralize(strings.dasherize(entity.name))}.module').then(m => m.${strings.classify(pluralize(entity.name))}Module) },`;
+  const newRoutingModuleContent = routingModuleContent.replace(strToDelete, '');
+  tree.overwrite('src\\app\\app.routes.ts', newRoutingModuleContent);
+
+  return tree;
+}
+
+
+export function deleteMenu(tree: Tree, entity: Entity): Tree {
+  // Get file in src\app\mock-api\common\navigation\data.ts
+  const navigationFile = tree.read(
+    'src\\app\\mock-api\\common\\navigation\\data.ts'
+  );
+
+  const navigationContent = (navigationFile as any).toString();
+  let newNavigationContent = '';
+
+  let includeLine = true;
+  navigationContent.split('\n').forEach((line: string) => {
+    if(line.includes(`// Begin ${entity.code}`) && includeLine){
+      includeLine = false;
+    }
+    if(line.includes(`// End ${entity.code}`) && !includeLine){
+      includeLine = true;
+    }
+    if(includeLine && !(line.includes(`// Begin ${entity.code}`) || line.includes(`// End ${entity.code}`))){
+      newNavigationContent += line + '\n';
+    }
+
+  });
+
+
+  tree.overwrite('src\\app\\mock-api\\common\\navigation\\data.ts', newNavigationContent);
+
+  return tree;
+}
+
+
 

@@ -4,6 +4,7 @@ import { Entity } from './entity.interface';
 import axios from 'axios';
 import { createEntity } from './create-entity';
 import { editEntity } from './edit-entity';
+import { deleteEntity } from './delete-entity';
 
 export function entityCrudGenerator(options: Options) {
   return async (tree: Tree, context: SchematicContext) => {
@@ -12,7 +13,7 @@ export function entityCrudGenerator(options: Options) {
 
       const response = await axios.get(`${options.api}/api/get-entity/${options.entity}`);
       const entity: Entity = response.data.data;
-      return handleExecution(entity, tree, context);
+      return handleExecution(entity, tree, context, options);
 
     } catch (error) {
       context.logger.error('Error occurred while generating entity CRUD', error as any);
@@ -21,7 +22,11 @@ export function entityCrudGenerator(options: Options) {
   };
 }
 
-function handleExecution(entity: Entity, tree: Tree, context: SchematicContext){
+function handleExecution(entity: Entity, tree: Tree, context: SchematicContext, options: Options){
+
+  if(options.delete){
+    return deleteEntity(entity, tree, context);
+  }
 
   if(!entity.built_creation){
     return createEntity(entity, tree, context);
@@ -30,5 +35,6 @@ function handleExecution(entity: Entity, tree: Tree, context: SchematicContext){
   if(entity.fields.some(field => field.built_edition) || entity.built_edition){
     return editEntity(entity, tree, context);
   }
+
   return tree;
 }
