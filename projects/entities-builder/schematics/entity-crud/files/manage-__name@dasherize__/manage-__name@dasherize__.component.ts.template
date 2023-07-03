@@ -1,4 +1,4 @@
-import { Component, OnInit } from '@angular/core';
+import { Component, OnInit, Inject } from '@angular/core';
 import { FormBuilder, FormGroup, Validators } from '@angular/forms';
 import { ActivatedRoute, Router } from '@angular/router';
 import { ManageEntityComponent } from 'app/shared/generic-components/manage-entity/manage-entity.component';
@@ -34,6 +34,7 @@ export class Manage<%= classify(name) %>Component extends ManageEntityComponent<
 		  protected _router: Router,
       protected _matSnackBar: MatSnackBar,
       protected _service: <%= classify(name) %>Service,
+      @Inject(MAT_DIALOG_DATA) public data: {id: string | null},
       <% for(let e of entity.fields) { %>
         <% if(e.inputType === 'relatedSelect') { %>
           protected _<%= camelize(e.relatedEntityName) %>Service: <%= e.relatedEntityName %>Service
@@ -45,7 +46,7 @@ export class Manage<%= classify(name) %>Component extends ManageEntityComponent<
             <%= entity.fields[e].name %>: [<%= entity.fields[e]?.validations_string %>], // <%= entity.fields[e].code %>
           <% } %><% } %>
         });
-        super(_globalService, _activateRoute, _formBuilder, _router, _matSnackBar, entityFormGroup, _service, '<%= pluralizeSpanish(label) %>', '<%= label %>');
+        super(_globalService, _activateRoute, _formBuilder, _router, _matSnackBar, entityFormGroup, _service, data, '<%= pluralizeSpanish(label) %>', '<%= label %>');
     }
 
     ngOnInit(): void {

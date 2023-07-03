@@ -6,9 +6,12 @@ import { EntitiesListComponent } from 'app/shared/generic-components/entities-li
 import { GlobalService } from 'app/shared/services/global/global.service';
 import { FuseConfirmationService } from '@fuse/services/confirmation';
 import { MatSnackBar } from '@angular/material/snack-bar';
+import { MatDialog } from '@angular/material/dialog';
 
 import { <%= classify(name) %> } from '../<%= dasherize(name) %>';
 import { <%= classify(name) %>Service } from '../service/<%= dasherize(name) %>.service';
+import { Manage<%= classify(name) %>Component } from '../manage-<%= dasherize(name) %>/manage-<%= dasherize(name) %>.component';
+
 
 @Component({
   selector: 'app-<%= pluralize(dasherize(name)) %>-list',
@@ -19,6 +22,9 @@ import { <%= classify(name) %>Service } from '../service/<%= dasherize(name) %>.
     }
     ::ng-deep .search-form .mat-mdc-form-field-subscript-wrapper{
         display: none;
+    }
+    ::ng-deep .mat-mdc-table .mdc-data-table__row:not(.mdc-data-table__row--selected):hover{
+        background: #e3e3e3 !important;
     }
   `]
 })
@@ -35,6 +41,7 @@ export class <%= pluralize(classify(name)) %>ListComponent extends EntitiesListC
     protected _service: <%= classify(name) %>Service,
     protected _fuseConfirmationService: FuseConfirmationService,
     protected _matSnackBar: MatSnackBar,
+    protected dialog: MatDialog
   ) {
     const searchFormGroup = _formBuilder.group({
         searchString: [],
@@ -51,6 +58,19 @@ export class <%= pluralize(classify(name)) %>ListComponent extends EntitiesListC
     }
     return JSON.parse(files).length
   }
+
+  manageEntity(id: string): void {
+    const dialogRef = this.dialog.open(Manage<%= classify(name) %>Component, {
+        data: {
+            id: id,
+        },
+    });
+
+    dialogRef.afterClosed().subscribe(result => {
+      console.log(`Dialog result: ${result}`);
+    });
+  }
+
 }
 
 

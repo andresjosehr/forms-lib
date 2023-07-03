@@ -1,12 +1,12 @@
 <div class="w-full p-10">
-	<div class="grid grid-cols-1 sm:grid-cols-2 gap-8 w-full mb-6">
+	<div class="grid grid-cols-1 sm:grid-cols-2 gap-8 w-full">
 		<div class="w-full col-span-1">
 			<div class="text-3xl font-bold"><%= pluralizeSpanish(label) %></div>
 			<div class="text-secondary">Una lista de <%= labelize(pluralizeSpanish(label)) %> registradas en el sistema</div>
 		</div>
 		<div class="w-full col-span-1">
 			<div class='sm:text-right'>
-				<button [routerLink]="'/<%= labelize(pluralizeSpanish(label)) %>/crear'" class="w-full sm:w-fit rounded mr-1 px-3 bg-primary-300 text-on-primary-300" mat-stroked-button>Crear <%= labelize(label) %></button>
+				<button (click)="manageEntity(null)" class="w-full sm:w-fit rounded mr-1 px-3 bg-primary-300 text-on-primary-300" mat-stroked-button>Crear <%= labelize(label) %></button>
 			</div>
 		</div>
 		<div class="w-full col-span-1">
@@ -61,9 +61,9 @@
 		</div>
     <% } %>
     <hr class="my-3">
-	<div class="sm:col-span-6 flex flex-col flex-auto p-6 bg-card shadow rounded-2xl overflow-hidden">
+	<div class="sm:col-span-6 flex flex-col flex-auto py-2 px-6 bg-card shadow rounded-2xl overflow-hidden">
 		<!-- Section -->
-		<div class="flex flex-col flex-auto mt-2 overflow-x-auto">
+		<div class="flex flex-col flex-auto mt-2 overflow-x-auto max-h-100">
 				<table
 						class="md:min-w-240 overflow-y-visible"
 						mat-table
@@ -94,24 +94,69 @@
 					<td data-label="Acciones" mat-cell *matCellDef="let <%= camelize(name) %>">
 						<div class="flex justify-end gap-2">
 							<div class="1/2">
-									<mat-icon [routerLink]="'/<%= labelize(pluralizeSpanish(label)) %>/editar/'+<%= camelize(name) %>.id" class="text-on-primary-300">edit</mat-icon>
+									<mat-icon (click)="manageEntity(<%= camelize(name) %>.id)" class="text-on-primary-300 cursor-pointer">edit</mat-icon>
 							</div>
 						<div class="1/2">
-									<mat-icon (click)="confirmDestroy(<%= camelize(name) %>.id)" class="text-red-500">delete</mat-icon>
+									<mat-icon (click)="confirmDestroy(<%= camelize(name) %>.id)" class="text-red-500 cursor-pointer">delete</mat-icon>
 							</div>
 						</div>
 					</td>
 				</ng-container>
 
-					<tr class="table-header" mat-header-row *matHeaderRowDef="columns"></tr>
-					<tr class="cursor-pointer" mat-row *matRowDef="let row; columns: columns;"></tr>
+					<tr class="h-9" mat-header-row *matHeaderRowDef="columns; sticky: true"></tr>
+					<tr class="h-6 hover-tabla" mat-row *matRowDef="let row; columns: columns;"></tr>
 				</table>
-				<mat-paginator [length]="entitiesPaginated?.total"
-						[pageSize]="entitiesPaginated?.per_page"
+				<mat-paginator [length]="entitiesPaginated1?.total"
+						[pageSize]="entitiesPaginated1?.per_page"
 						[pageSizeOptions]="[10, 25, 100]"
-						(page)="paginate($event)"
+						(page)="paginate($event, 1)"
 						aria-label="Select page">
-				</mat-paginator>
+		    </mat-paginator>
 		</div>
-	</div>
+
+    <hr class="my-4">
+
+    <div class="flex flex-row flex-wrap flex-auto my-10 overflow-hidden py-3" style="gap: 20px">
+        <div style="width: calc(25% - 20px);" *ngFor="let entity of entitiesPaginated2?.data">
+            <div
+            (click)="manageEntity(entity.id)"
+            class="bg-card shadow rounded-2xl p-4 cursor-pointer
+            transition ease-in-out hover:scale-105 duration-300
+            ">
+				<div class="flex gap-2">
+					<div class="text-left" style="width: calc(50% - 8px);">
+                    <div class="text-xs">Kilometrake</div>
+						<div class="text-base">{{entity.kilometraje}}km</div>
+					</div>
+					<div class="text-right" style="width: calc(50% - 8px);">
+						<div class="text-xs">Nombre</div>
+						<div class="text-base">Mercedes</div>
+					</div>
+				</div>
+				<hr class="my-1">
+
+				<div>
+					<img class="w-full"	src="https://logomarca.com.do/wp-content/uploads/2019/09/BOTONES-PUBLICITARIOS.jpg">
+				</div>
+
+				<div class="flex gap-2">
+					<div class="text-left" style="width: calc(50% - 8px);">
+                        <div class="text-xs">Kilometrake</div>
+						<div class="text-base">1000km</div>
+					</div>
+					<div class="text-right" style="width: calc(50% - 8px);">
+						<div class="text-xs">Nombre</div>
+						<div class="text-base">Mercedes</div>
+					</div>
+				</div>
+            </div>
+        </div>
+    </div>
+    <mat-paginator [length]="entitiesPaginated2?.total"
+						[pageSize]="entitiesPaginated2?.per_page"
+						[pageSizeOptions]="[10, 25, 100]"
+						(page)="paginate($event, 2)"
+						aria-label="Select page">
+	    </mat-paginator>
 </div>
+
