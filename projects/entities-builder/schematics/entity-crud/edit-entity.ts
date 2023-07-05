@@ -19,7 +19,7 @@ export function editEntity(
   context: SchematicContext
 ): Tree {
 
-  console.log("Entro en edición");
+  // console.log("Entro en edición");
 
   checkNewRoute(tree, entity);
   checkMenu(tree, entity);

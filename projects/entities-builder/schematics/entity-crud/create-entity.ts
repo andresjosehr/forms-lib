@@ -141,7 +141,7 @@ export function checkMenu(tree: Tree, options: Entity): void {
 export function buildValidations(fields: Field[]): Field[] {
 
   return fields.map((field) => {
-    let v = '[';
+    let v = '';
     field.validations.forEach((validation) => {
       v += `${validation.front_validation}`;
 
@@ -153,7 +153,7 @@ export function buildValidations(fields: Field[]): Field[] {
 
     if(v.length > 0) {
       v = v.substring(0, v.length - 2);
-      v = ', ' + v + ']';
+      v = ', [' + v + ']';
     }
 
     field['validations_string'] = v;

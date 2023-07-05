@@ -4,6 +4,7 @@ import { ActivatedRoute, Router } from '@angular/router';
 import { ManageEntityComponent } from 'app/shared/generic-components/manage-entity/manage-entity.component';
 import { GlobalService } from 'app/shared/services/global/global.service';
 import { MatSnackBar } from '@angular/material/snack-bar';
+import { MAT_DIALOG_DATA } from '@angular/material/dialog';
 
 import { <%= classify(name) %> } from '../<%= dasherize(name) %>';
 import { <%= classify(name) %>Service } from '../service/<%= dasherize(name) %>.service';
