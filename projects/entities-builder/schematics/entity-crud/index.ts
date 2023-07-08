@@ -33,6 +33,8 @@ function handleExecution(entity: Entity, tree: Tree, context: SchematicContext, 
   }
 
   if(entity.fields.some(field => field.built_edition) || entity.built_edition){
+    console.log("Edicion")
+    console.log(entity.fields.some(field => field.built_edition))
     return editEntity(entity, tree, context);
   }
 

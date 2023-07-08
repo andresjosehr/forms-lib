@@ -9,110 +9,122 @@
                         <div class="col-span-1 relative">
                         </div>
                     </div>
-                    <div [formGroup]="entityFormGroup" class="grid sm:grid-cols-2 gap-y-1 gap-x-5 w-full mt-8">
+                    <div [formGroup]="entityFormGroup" class="w-full mt-8">
 
-                      <% for (let e in entity.fields) { %>
-                      <% if(entity.fields[e].editable) { %>
-                      <!-- <%= entity.fields[e].code %> -->
+                      <mat-stepper linear #stepper>
+                        <% for (let i in entity.steps) { %>
+                        <mat-step>
+                          <div class="grid sm:grid-cols-2 gap-y-1 gap-x-5 w-full mt-5">
+                        <% for (let e in entity.fields) { %>
+                        <% if(entity.fields[e].editable && entity.fields[e].step == entity.steps[i].order) { %>
 
-                      <% if(entity.fields[e].input_type.name!=='file') { %>
-                        <div class="col-span-1">
-                      <% } %>
-
-                      <% if(entity.fields[e].input_type.name==='file') { %>
-                        <div class="col-span-2">
-                      <% } %>
-
-                          <% if(entity.fields[e].input_type.name!=='radio' && entity.fields[e].input_type.name!=='checkbox' && entity.fields[e].input_type.name!=='file') { %>
-                            <mat-form-field class="w-full">
-                                <mat-label><%= entity.fields[e].label %></mat-label>
-
-                                <% if(entity.fields[e].input_type.name==='text') { %>
-                                  <input id='<%= entity.fields[e].name %>' type="text" formControlName="<%= entity.fields[e].name %>" matInput>
-                                <% } %>
-
-                                <% if(entity.fields[e].input_type.name==='number') { %>
-                                  <input id='<%= entity.fields[e].name %>' type="number" formControlName="<%= entity.fields[e].name %>" matInput>
-                                <% } %>
-
-                                <% if(entity.fields[e].input_type.name==='select') { %>
-                                  <mat-select id='<%= entity.fields[e].name %>' formControlName="<%= entity.fields[e].name %>">
-
-                                    <% for (let i in entity.fields[e].options) { %>
-                                      <mat-option value="<%= entity.fields[e].options[i].name %>"><%= entity.fields[e].options[i].name %> </mat-option>
-                                    <% } %>
-
-                                  </mat-select>
-                                  <% } %>
-
-                                <% if(entity.fields[e].input_type.name==='date') { %>
-                                  <input class="cursor-pointer" (click)="<%= entity.fields[e].name %>_date.open()" matInput [matDatepicker]="<%= entity.fields[e].name %>_date" id='<%= entity.fields[e].name %>' formControlName="<%= entity.fields[e].name %>">
-                                  <mat-hint>YYYY-MM-DD</mat-hint>
-                                  <mat-datepicker #<%= entity.fields[e].name %>_date></mat-datepicker>
-                                <% } %>
-
-                                <% if(entity.fields[e].input_type.name==='textarea') { %>
-                                  <textarea id='<%= entity.fields[e].name %>' formControlName="<%= entity.fields[e].name %>" matInput></textarea>
-                                <% } %>
-
-                                <!-- <% if(entity.fields[e].input_type.name==='checkbox') { %>
-                                  <mat-checkbox id='<%= entity.fields[e].name %>' formControlName="<%= entity.fields[e].name %>"></mat-checkbox>
-                                <% } %> -->
+                          <ng-template matStepLabel><%= entity.steps[i].label %></ng-template>
 
 
-                                <% if(entity.fields[e].input_type.name==='relatedSelect') { %>
-
-                                  <mat-select id='<%= entity.fields[e].name %>' formControlName="<%= entity.fields[e].name %>">
-                                    <mat-option *ngFor="let option of <%= camelize(pluralize(entity.fields[e].relatedEntityName)) %>" [value]="option.id">
-                                      {{ option.name }}
-                                    </mat-option>
-                                  </mat-select>
-                                <% } %>
-
-                                  <mat-error *ngFor="let i of _globalService.errorsLength(entityFormGroup.get('<%= entity.fields[e].name %>'))">
-                                    <ng-container *ngIf="entityFormGroup.get('<%= entity.fields[e].name %>').hasError(i)">
-                                      {{ entityFormGroup.get('<%= entity.fields[e].name %>').errors[i] }}
-                                    </ng-container>
-                                  </mat-error>
-
-
-                            </mat-form-field>
-                          <% } %>
-
-                            <% if(entity.fields[e].input_type.name==='radio') { %>
-                              <div>
-                                  <div class="font-medium"><%= entity.fields[e].label %></div>
-                                  <mat-radio-group aria-label="Selecciona una opción">
-                                    <% for (let i in entity.fields[e].options) { %>
-                                      <mat-radio-button value="<%= entity.fields[e].options[i].name %>"><%= entity.fields[e].options[i].name %></mat-radio-button>
-                                    <% } %>
-                                  </mat-radio-group>
-                              </div>
+                            <% if(entity.fields[e].input_type.name!=='file') { %>
+                            <div class="col-span-1">
                             <% } %>
-
-                            <% if(entity.fields[e].input_type.name==='checkbox') { %>
-                              <div>
-                                  <div class="font-medium"><%= entity.fields[e].label %></div>
-                                  <div aria-label="Selecciona">
-                                      <mat-checkbox id='<%= entity.fields[e].name %>' formControlName="<%= entity.fields[e].name %>"></mat-checkbox>
-                                    </div>
-                              </div>
-                            <% } %>
-
 
                             <% if(entity.fields[e].input_type.name==='file') { %>
-                              <file-input [label]='"<%= entity.fields[e].label %>"' [files]="entityFormGroup.get('<%= entity.fields[e].name %>')"></file-input>
+                            <div class="col-span-2">
                             <% } %>
 
+                              <% if(entity.fields[e].input_type.name!=='radio' && entity.fields[e].input_type.name!=='checkbox' && entity.fields[e].input_type.name!=='file') { %>
+                                <mat-form-field class="w-full">
+                                    <mat-label><%= entity.fields[e].label %></mat-label>
 
+                                    <% if(entity.fields[e].input_type.name==='text') { %>
+                                      <input id='<%= entity.fields[e].name %>' type="text" formControlName="<%= entity.fields[e].name %>" matInput>
+                                    <% } %>
+
+                                    <% if(entity.fields[e].input_type.name==='number') { %>
+                                      <input id='<%= entity.fields[e].name %>' type="number" formControlName="<%= entity.fields[e].name %>" matInput>
+                                    <% } %>
+
+                                    <% if(entity.fields[e].input_type.name==='select') { %>
+                                      <mat-select id='<%= entity.fields[e].name %>' formControlName="<%= entity.fields[e].name %>">
+
+                                        <% for (let z in entity.fields[e].options) { %>
+                                          <mat-option value="<%= entity.fields[e].options[z].name %>"><%= entity.fields[e].options[z].name %> </mat-option>
+                                        <% } %>
+
+                                      </mat-select>
+                                      <% } %>
+
+                                    <% if(entity.fields[e].input_type.name==='date') { %>
+                                      <input class="cursor-pointer" (click)="<%= entity.fields[e].name %>_date.open()" matInput [matDatepicker]="<%= entity.fields[e].name %>_date" id='<%= entity.fields[e].name %>' formControlName="<%= entity.fields[e].name %>">
+                                      <mat-hint>YYYY-MM-DD</mat-hint>
+                                      <mat-datepicker #<%= entity.fields[e].name %>_date></mat-datepicker>
+                                    <% } %>
+
+                                    <% if(entity.fields[e].input_type.name==='textarea') { %>
+                                      <textarea id='<%= entity.fields[e].name %>' formControlName="<%= entity.fields[e].name %>" matInput></textarea>
+                                    <% } %>
+
+                                    <!-- <% if(entity.fields[e].input_type.name==='checkbox') { %>
+                                      <mat-checkbox id='<%= entity.fields[e].name %>' formControlName="<%= entity.fields[e].name %>"></mat-checkbox>
+                                    <% } %> -->
+
+
+                                    <% if(entity.fields[e].input_type.name==='relatedSelect') { %>
+
+                                      <mat-select id='<%= entity.fields[e].name %>' formControlName="<%= entity.fields[e].name %>">
+                                        <mat-option *ngFor="let option of <%= camelize(pluralize(entity.fields[e].relatedEntityName)) %>" [value]="option.id">
+                                          {{ option.name }}
+                                        </mat-option>
+                                      </mat-select>
+                                    <% } %>
+
+                                      <mat-error *ngFor="let i of _globalService.errorsLength(entityFormGroup.get('<%= entity.fields[e].name %>'))">
+                                        <ng-container *ngIf="entityFormGroup.get('<%= entity.fields[e].name %>').hasError(i)">
+                                          {{ entityFormGroup.get('<%= entity.fields[e].name %>').errors[i] }}
+                                        </ng-container>
+                                      </mat-error>
+
+
+                                </mat-form-field>
+                              <% } %>
+
+                              <% if(entity.fields[e].input_type.name==='radio') { %>
+                                <div>
+                                    <div class="font-medium"><%= entity.fields[e].label %></div>
+                                    <mat-radio-group aria-label="Selecciona una opción">
+                                      <% for (let i in entity.fields[e].options) { %>
+                                        <mat-radio-button value="<%= entity.fields[e].options[i].name %>"><%= entity.fields[e].options[i].name %></mat-radio-button>
+                                      <% } %>
+                                    </mat-radio-group>
+                                </div>
+                              <% } %>
+
+                              <% if(entity.fields[e].input_type.name==='checkbox') { %>
+                                <div>
+                                    <div class="font-medium"><%= entity.fields[e].label %></div>
+                                    <div aria-label="Selecciona">
+                                        <mat-checkbox id='<%= entity.fields[e].name %>' formControlName="<%= entity.fields[e].name %>"></mat-checkbox>
+                                      </div>
+                                </div>
+                              <% } %>
+
+
+                              <% if(entity.fields[e].input_type.name==='file') { %>
+                                <file-input [label]='"<%= entity.fields[e].label %>"' [files]="entityFormGroup.get('<%= entity.fields[e].name %>')"></file-input>
+                              <% } %>
+
+
+                            </div>
+
+                          <!-- <div class="epale"><%= entity.steps.length %> --- <%= i %></div> -->
+
+                        <% } %>
+                        <% } %>
                         </div>
-                      <% } %>
-                      <% } %>
-                    </div>
-                    <!-- Divider -->
-                    <div class="mt-11 mb-10 border-t"></div>
-                    <!-- Actions -->
-                    <div class="flex items-center justify-end">
+                        <% if(i != entity.steps.length-1) { %>
+                          <div class="w-full text-center mt-3">
+                            <button class="shadow bg-slate-500 text-white text-center" mat-button matStepperNext>Siguiente ></button>
+                          </div>
+                        <% } %>
+                        <% if(i == entity.steps.length-1) { %>
+                          <div class="w-full text-center mt-3">
                             <button
                                     class="ml-4"
                                     mat-flat-button
@@ -120,6 +132,23 @@
                                     (click)="this.entityID ? updateEntity() : createEntity()"
                                     [color]="'primary'">Guardar
                             </button>
+                          </div>
+                        <% } %>
+                      </mat-step>
+                        <% } %>
+                      </mat-stepper>
+                    </div>
+                    <!-- Divider -->
+                    <div class="mt-11 mb-10 border-t"></div>
+                    <!-- Actions -->
+                    <div class="flex items-center justify-end">
+                            <!-- <button
+                                    class="ml-4"
+                                    mat-flat-button
+                                    type="button"
+                                    (click)="this.entityID ? updateEntity() : createEntity()"
+                                    [color]="'primary'">Guardar
+                            </button> -->
                     </div>
             </form>
 </div>

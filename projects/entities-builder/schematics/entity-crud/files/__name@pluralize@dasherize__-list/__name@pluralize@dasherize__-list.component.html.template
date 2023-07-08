@@ -30,7 +30,6 @@
     </div>
   </div>
 
-  <% if(searchableList) { %>
   <div
     [formGroup]="_searchFormGroup"
     class="grid grid-cols-11 gap-2 items-center search-form"
@@ -41,24 +40,29 @@
       <mat-form-field class="w-full" appearance="outline">
         <mat-label><%= entity.fields[e].label %></mat-label>
 
-        <% if(entity.fields[e].inputType==='text') { %>
+
+        <% if(entity.fields[e].input_type.name==='date') { %>
+          <input class="cursor-pointer" (click)="<%= entity.fields[e].name %>_date.open()" matInput [matDatepicker]="<%= entity.fields[e].name %>_date" id='<%= entity.fields[e].name %>' formControlName="<%= entity.fields[e].name %>">
+          <mat-hint>YYYY-MM-DD</mat-hint>
+          <mat-datepicker #<%= entity.fields[e].name %>_date></mat-datepicker>
+        <% } %>
+
+        <% if(entity.fields[e].input_type.name==='text' || entity.fields[e].input_type.name==='number') { %>
         <input
           id="<%= entity.fields[e].name %>"
-          type="text"
+          type="<%= entity.fields[e].input_type.name %>"
           formControlName="<%= entity.fields[e].name %>"
           matInput
         />
-        <% } %> <% if(entity.fields[e].inputType==='select') { %>
+        <% } %> <% if(entity.fields[e].input_type.name==='select') { %>
         <mat-select
           id="<%= entity.fields[e].name %>"
           formControlName="<%= entity.fields[e].name %>"
         >
-          <mat-option
-            *ngFor="let option of <%= entity.fields[e].name %>Options"
-            [value]="option.value"
-          >
-            {{ option.label }}
-          </mat-option>
+        <mat-option value=""></mat-option>
+        <% for (let z in entity.fields[e].options) { %>
+          <mat-option value="<%= entity.fields[e].options[z].name %>"><%= entity.fields[e].options[z].name %> </mat-option>
+        <% } %>
         </mat-select>
         <% } %>
       </mat-form-field>
@@ -78,7 +82,6 @@
       </button>
     </div>
   </div>
-  <% } %>
   <hr class="my-3" />
   <div
     class="sm:col-span-6 flex flex-col flex-auto py-2 px-6 bg-card shadow rounded-2xl overflow-hidden"
@@ -91,6 +94,7 @@
         [dataSource]="dataSource"
       >
         <% for(let e in entity.fields) { %>
+          <% if(entity.fields[e].visible) { %>
         <!-- <%= entity.fields[e].code %> column -->
         <ng-container matColumnDef="<%= entity.fields[e].name %>">
           <th mat-header-cell *matHeaderCellDef>
@@ -111,6 +115,7 @@
             </span>
           </td>
         </ng-container>
+        <% } %>
         <% } %>
 
         <!-- Acciones -->

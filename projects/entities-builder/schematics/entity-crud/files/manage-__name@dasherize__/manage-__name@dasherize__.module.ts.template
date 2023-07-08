@@ -13,6 +13,7 @@ import {DateModule} from 'app/shared/date.module';
 import {MatRadioModule} from '@angular/material/radio';
 import {MatCheckboxModule} from '@angular/material/checkbox';
 import {FileInputModule} from 'app/shared/file-input/file-input.module';
+import {MatStepperModule} from '@angular/material/stepper';
 
 
 
@@ -33,7 +34,8 @@ import {FileInputModule} from 'app/shared/file-input/file-input.module';
     MatButtonModule,
     MatRadioModule,
     MatCheckboxModule,
-    FileInputModule
+    FileInputModule,
+    MatStepperModule
   ]
 })
 export class Manage<%= classify(name) %>Module { }

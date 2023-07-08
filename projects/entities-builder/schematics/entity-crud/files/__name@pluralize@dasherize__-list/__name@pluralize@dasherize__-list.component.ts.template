@@ -30,7 +30,7 @@ import { Manage<%= classify(name) %>Component } from '../manage-<%= dasherize(na
 })
 export class <%= pluralize(classify(name)) %>ListComponent extends EntitiesListComponent<<%= classify(name) %>>{
 
-  columns: Array<string> = [<% for(let e in entity.fields) { %><% if(e!=0) { %>,<% } %> '<%=entity.fields[e].name%>'<% } %>, 'actions'];
+  columns: Array<string> = [<% for(let e in entity.fields) { %><% if(entity.fields[e].visible) { %><% if(e!=0) { %>,<% } %> '<%=entity.fields[e].name%>'<% } %><% } %>, 'actions'];
 
   constructor(
     protected _activatedRoute: ActivatedRoute,
@@ -63,7 +63,9 @@ export class <%= pluralize(classify(name)) %>ListComponent extends EntitiesListC
     const dialogRef = this.dialog.open(Manage<%= classify(name) %>Component, {
         data: {
             id: id,
+            requestEvent: this.requestEvent
         },
+        maxHeight: "90vh",
     });
 
     dialogRef.afterClosed().subscribe(result => {
