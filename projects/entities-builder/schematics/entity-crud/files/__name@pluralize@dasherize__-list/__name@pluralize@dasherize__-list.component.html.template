@@ -1,243 +1,362 @@
-<div class="w-full p-10">
-  <div class="grid grid-cols-1 sm:grid-cols-2 gap-8 w-full">
-    <div class="w-full col-span-1">
-      <div class="text-3xl font-bold"><%= pluralizeSpanish(label) %></div>
-      <div class="text-secondary">
-        Una lista de <%= labelize(pluralizeSpanish(label)) %> registradas en el
-        sistema
+<div class="w-full p-10" *ngIf="!isChild">
+   <div class="grid grid-cols-1 sm:grid-cols-2 gap-8 w-full">
+      <div class="w-full col-span-1">
+         <div class="text-3xl font-bold"><%= pluralizeSpanish(label) %></div>
+         <div class="text-secondary">
+            Una lista de <%= labelize(pluralizeSpanish(label)) %> registradas en el
+            sistema
+         </div>
       </div>
-    </div>
-    <div class="w-full col-span-1">
-      <div class="sm:text-right">
-        <button
-          (click)="manageEntity(null)"
-          class="w-full sm:w-fit rounded mr-1 px-3 bg-primary-300 text-on-primary-300"
-          mat-stroked-button
-        >
-          Crear <%= labelize(label) %>
-        </button>
+      <div class="w-full col-span-1">
+         <div class="sm:text-right">
+            <button
+               (click)="manageEntity(null)"
+               class="w-full sm:w-fit rounded mr-1 px-3 bg-primary-300 text-on-primary-300"
+               mat-stroked-button
+               >
+            Crear <%= labelize(label) %>
+            </button>
+         </div>
       </div>
-    </div>
-    <div class="w-full col-span-1">
-      <!-- Success -->
-      <fuse-alert *ngIf="m" [type]="'success'">
-        <span fuseAlertTitle>Exito</span>
-        El/la <%= labelize(label) %> ha sido
-        <span *ngIf="m === '1'">creado</span>
-        <span *ngIf="m === '2'">actualizado</span>
-        exitosamente
-      </fuse-alert>
-    </div>
-  </div>
-
-  <div
-    [formGroup]="_searchFormGroup"
-    class="grid grid-cols-11 gap-2 items-center search-form"
-  >
-    <% for (let e in entity.fields) { %> <% if(entity.fields[e].searchable) { %>
-    <!-- <%= entity.fields[e].code %> search field -->
-    <div class="col-span-2">
-      <mat-form-field class="w-full" appearance="outline">
-        <mat-label><%= entity.fields[e].label %></mat-label>
-
-
-        <% if(entity.fields[e].input_type.name==='date') { %>
-          <input class="cursor-pointer" (click)="<%= entity.fields[e].name %>_date.open()" matInput [matDatepicker]="<%= entity.fields[e].name %>_date" id='<%= entity.fields[e].name %>' formControlName="<%= entity.fields[e].name %>">
-          <mat-hint>YYYY-MM-DD</mat-hint>
-          <mat-datepicker #<%= entity.fields[e].name %>_date></mat-datepicker>
-        <% } %>
-
-        <% if(entity.fields[e].input_type.name==='text' || entity.fields[e].input_type.name==='number') { %>
-        <input
-          id="<%= entity.fields[e].name %>"
-          type="<%= entity.fields[e].input_type.name %>"
-          formControlName="<%= entity.fields[e].name %>"
-          matInput
-        />
-        <% } %> <% if(entity.fields[e].input_type.name==='select') { %>
-        <mat-select
-          id="<%= entity.fields[e].name %>"
-          formControlName="<%= entity.fields[e].name %>"
-        >
-        <mat-option value=""></mat-option>
-        <% for (let z in entity.fields[e].options) { %>
-          <mat-option value="<%= entity.fields[e].options[z].name %>"><%= entity.fields[e].options[z].name %> </mat-option>
-        <% } %>
-        </mat-select>
-        <% } %>
-      </mat-form-field>
-    </div>
-    <% } %> <% } %>
-    <div class="col-span-2">
-      <mat-form-field class="w-full" appearance="outline">
-        <mat-label>Termino</mat-label>
-        <input matInput formControlName="searchString" />
-      </mat-form-field>
-    </div>
-    <div class="col-span-1 text-left">
-      <button (click)="makeSearch(1)" mat-mini-fab>
-        <mat-icon aria-label="Example icon-button with a heart icon"
-          >search</mat-icon
-        >
-      </button>
-    </div>
-  </div>
-  <hr class="my-3" />
-  <div
-    class="sm:col-span-6 flex flex-col flex-auto py-2 px-6 bg-card shadow rounded-2xl overflow-hidden"
-  >
-    <!-- Section -->
-    <div class="flex flex-col flex-auto mt-2 overflow-x-auto max-h-100">
-      <table
-        class="md:min-w-240 overflow-y-visible"
-        mat-table
-        [dataSource]="dataSource"
+      <div class="w-full col-span-1">
+         <!-- Success -->
+         <fuse-alert *ngIf="m" [type]="'success'">
+         <span fuseAlertTitle>Exito</span>
+         El/la <%= labelize(label) %> ha sido
+         <span *ngIf="m === '1'">creado</span>
+         <span *ngIf="m === '2'">actualizado</span>
+         exitosamente
+         </fuse-alert>
+      </div>
+   </div>
+   <div
+      [formGroup]="_searchFormGroup"
+      class="grid grid-cols-11 gap-2 items-center search-form"
       >
-        <% for(let e in entity.fields) { %>
-          <% if(entity.fields[e].visible) { %>
-        <!-- <%= entity.fields[e].code %> column -->
-        <ng-container matColumnDef="<%= entity.fields[e].name %>">
-          <th mat-header-cell *matHeaderCellDef>
-            <%= entity.fields[e].label %>
-          </th>
-          <td
-            data-label="Dirección"
-            mat-cell
-            *matCellDef="let <%= camelize(name) %>"
-            class="px-4"
-          >
-            <span class="font-medium">
-              <% if(entity.fields[e].input_type.name !=='file') { %>
-              {{<%= camelize(name) %>.<%= entity.fields[e].name %> || "-"}}
-              <% } %> <% if(entity.fields[e].input_type.name ==='file') { %>
-              {{getFileCounts(<%= camelize(name) %>.<%= entity.fields[e].name %>)}}
-              <% } %>
-            </span>
-          </td>
-        </ng-container>
-        <% } %>
-        <% } %>
-
-        <!-- Acciones -->
-        <ng-container matColumnDef="actions">
-          <th mat-header-cell *matHeaderCellDef>Acciones</th>
-          <td
-            data-label="Acciones"
-            mat-cell
-            *matCellDef="let <%= camelize(name) %>"
-          >
-            <div class="flex justify-end gap-2">
-              <div class="1/2">
-                <mat-icon
-                  (click)="manageEntity(<%= camelize(name) %>.id)"
-                  class="text-on-primary-300 cursor-pointer"
-                  >edit</mat-icon
-                >
-              </div>
-              <div class="1/2">
-                <mat-icon
-                  (click)="confirmDestroy(<%= camelize(name) %>.id)"
-                  class="text-red-500 cursor-pointer"
-                  >delete</mat-icon
-                >
-              </div>
-            </div>
-          </td>
-        </ng-container>
-
-        <tr
-          class="h-9"
-          mat-header-row
-          *matHeaderRowDef="columns; sticky: true"
-        ></tr>
-        <tr
-          class="h-6 hover-tabla"
-          mat-row
-          *matRowDef="let row; columns: columns"
-        ></tr>
-      </table>
-      <mat-paginator
-        [length]="entitiesPaginated1?.total"
-        [pageSize]="entitiesPaginated1?.per_page"
-        [pageSizeOptions]="[10, 25, 100]"
-        (page)="paginate($event, 1)"
-        aria-label="Select page"
-      >
-      </mat-paginator>
-    </div>
-  </div>
-
-  <hr class="my-10" />
-
-  <div
-    class="flex flex-row flex-wrap flex-auto overflow-hidden py-3"
-    style="gap: 20px"
-  >
-    <div
-      style="width: calc(25% - 20px)"
-      *ngFor="let <%= camelize(name) %> of entitiesPaginated2?.data"
-    >
-    <div
-    (click)="manageEntity(<%= camelize(name) %>.id)"
-    class="bg-card shadow rounded-2xl p-4 cursor-pointer transition ease-in-out hover:scale-105 duration-300"
->
-    <div class="flex gap-2">
-        <% let count = 0; %>
-        <% for(let e in entity.fields) { %>
-            <% if(entity.fields[e].input_type.name !== 'file' && count < 2) { %>
-                <div class="<% if(count==0) {  %>text-left<% } %><% if(count==1) {  %>text-right<% } %>" style="width: calc(50% - 8px)">
-                    <div class="text-xs"><%= entity.fields[e].label %></div>
-                    <div class="text-base">
-                        {{<%= camelize(name) %>.<%= entity.fields[e].name %> || "-"}}
-                    </div>
-                </div>
-                <% count++; %>
+      <% for (let e in entity.fields) { %> <% if(entity.fields[e].searchable) { %>
+      <!-- <%= entity.fields[e].code %> search field -->
+      <div class="col-span-2">
+         <mat-form-field class="w-full" appearance="outline">
+            <mat-label><%= entity.fields[e].label %></mat-label>
+            <% if(entity.fields[e].input_type.name==='date') { %>
+            <input class="cursor-pointer" (click)="<%= entity.fields[e].name %>_date.open()" matInput [matDatepicker]="<%= entity.fields[e].name %>_date" id='<%= entity.fields[e].name %>' formControlName="<%= entity.fields[e].name %>">
+            <mat-hint>YYYY-MM-DD</mat-hint>
+            <mat-datepicker #<%= entity.fields[e].name %>_date></mat-datepicker>
             <% } %>
-        <% } %>
-    </div>
-    <hr class="my-1" />
-
-    <% for(let e in entity.fields) { %>
-        <% if(entity.fields[e].input_type.name ==='file') { %>
+            <% if(entity.fields[e].input_type.name==='text' || entity.fields[e].input_type.name==='number') { %>
+            <input
+               id="<%= entity.fields[e].name %>"
+               type="<%= entity.fields[e].input_type.name %>"
+               formControlName="<%= entity.fields[e].name %>"
+               matInput
+               />
+            <% } %> <% if(entity.fields[e].input_type.name==='select') { %>
+            <mat-select
+               id="<%= entity.fields[e].name %>"
+               formControlName="<%= entity.fields[e].name %>"
+               >
+               <mat-option value=""></mat-option>
+               <% for (let z in entity.fields[e].options) { %>
+               <mat-option value="<%= entity.fields[e].options[z].name %>"><%= entity.fields[e].options[z].name %> </mat-option>
+               <% } %>
+            </mat-select>
+            <% } %>
+         </mat-form-field>
+      </div>
+      <% } %> <% } %>
+      <div class="col-span-2">
+         <mat-form-field class="w-full" appearance="outline">
+            <mat-label>Termino</mat-label>
+            <input matInput formControlName="searchString" />
+         </mat-form-field>
+      </div>
+      <div class="col-span-1 text-left">
+         <button (click)="makeSearch(1)" mat-mini-fab>
+            <mat-icon aria-label="Example icon-button with a heart icon"
+               >search</mat-icon
+               >
+         </button>
+      </div>
+   </div>
+   <hr class="my-3" />
+   <div
+      class="sm:col-span-6 flex flex-col flex-auto py-2 px-6 bg-card shadow rounded-2xl overflow-hidden"
+      >
+      <!-- Section -->
+      <div class="flex flex-col flex-auto mt-2 overflow-x-auto max-h-100">
+         <table
+            class="md:min-w-240 overflow-y-visible"
+            mat-table
+            [dataSource]="dataSource"
+            >
+            <% for(let e in entity.fields) { %>
+            <% if(entity.fields[e].visible) { %>
+            <!-- <%= entity.fields[e].code %> column -->
+            <ng-container matColumnDef="<%= entity.fields[e].name %>">
+               <th mat-header-cell *matHeaderCellDef>
+                  <%= entity.fields[e].label %>
+               </th>
+               <td
+                  data-label="Dirección"
+                  mat-cell
+                  *matCellDef="let <%= camelize(name) %>"
+                  class="px-4"
+                  >
+                  <span class="font-medium">
+                  <% if(entity.fields[e].input_type.name !=='file') { %>
+                  {{<%= camelize(name) %>.<%= entity.fields[e].name %> || "-"}}
+                  <% } %> <% if(entity.fields[e].input_type.name ==='file') { %>
+                  {{getFileCounts(<%= camelize(name) %>.<%= entity.fields[e].name %>)}}
+                  <% } %>
+                  </span>
+               </td>
+            </ng-container>
+            <% } %>
+            <% } %>
+            <!-- Acciones -->
+            <ng-container matColumnDef="actions">
+               <th mat-header-cell *matHeaderCellDef>Acciones</th>
+               <td
+                  data-label="Acciones"
+                  mat-cell
+                  *matCellDef="let <%= camelize(name) %>"
+                  >
+                  <div class="flex justify-end gap-2">
+                     <div class="1/2">
+                        <mat-icon
+                           (click)="manageEntity(<%= camelize(name) %>.id)"
+                           class="text-on-primary-300 cursor-pointer"
+                           >edit</mat-icon
+                           >
+                     </div>
+                     <div class="1/2">
+                        <mat-icon
+                           (click)="confirmDestroy(<%= camelize(name) %>.id)"
+                           class="text-red-500 cursor-pointer"
+                           >delete</mat-icon
+                           >
+                     </div>
+                  </div>
+               </td>
+            </ng-container>
+            <tr
+               class="h-9"
+               mat-header-row
+               *matHeaderRowDef="columns; sticky: true"
+               ></tr>
+            <tr
+               class="h-6 hover-tabla"
+               mat-row
+               *matRowDef="let row; columns: columns"
+               ></tr>
+         </table>
+         <mat-paginator
+         [length]="entitiesPaginated1?.total"
+         [pageSize]="entitiesPaginated1?.per_page"
+         [pageSizeOptions]="[10, 25, 100]"
+         (page)="paginate($event, 1)"
+         aria-label="Select page"
+         >
+         </mat-paginator>
+      </div>
+   </div>
+   <hr class="my-10" />
+   <div
+      class="flex flex-row flex-wrap flex-auto overflow-hidden py-3"
+      style="gap: 20px"
+      >
+      <div
+         style="width: calc(25% - 20px)"
+         *ngFor="let <%= camelize(name) %> of entitiesPaginated2?.data"
+         >
+         <div
+            (click)="manageEntity(<%= camelize(name) %>.id)"
+            class="bg-card shadow rounded-2xl p-4 cursor-pointer transition ease-in-out hover:scale-105 duration-300"
+            >
+            <div class="flex gap-2">
+               <% let count = 0; %>
+               <% for(let e in entity.fields) { %>
+               <% if(entity.fields[e].input_type.name !== 'file' && count < 2) { %>
+               <div class="<% if(count==0) {  %>text-left<% } %><% if(count==1) {  %>text-right<% } %>" style="width: calc(50% - 8px)">
+                  <div class="text-xs"><%= entity.fields[e].label %></div>
+                  <div class="text-base">
+                     {{<%= camelize(name) %>.<%= entity.fields[e].name %> || "-"}}
+                  </div>
+               </div>
+               <% count++; %>
+               <% } %>
+               <% } %>
+            </div>
+            <hr class="my-1" />
+            <% for(let e in entity.fields) { %>
+            <% if(entity.fields[e].input_type.name ==='file') { %>
             <div>
-                <img
-                    class="w-full"
-                    [src]="getImages(<%= camelize(name) %>.<%= entity.fields[e].name %>)"
-                />
+               <img
+                  class="w-full"
+                  [src]="getImages(<%= camelize(name) %>.<%= entity.fields[e].name %>)"
+                  />
             </div>
-        <% } %>
-    <% } %>
-    <hr class="my-1" />
-
-    <div class="flex gap-2">
-      <% let omited = 0; let notOmited = 0 %>
-        <% for(let e in entity.fields) { %>
-            <% if(entity.fields[e].input_type.name !== 'file' && count < 4 && omited >= 2) { %>
-                <div class="<% if(notOmited==0) {  %>text-left<% } %><% if(notOmited==1) {  %>text-right<% } %>" style="width: calc(50% - 8px)">
-                    <div class="text-xs"><%= entity.fields[e].label %></div>
-                    <div class="text-base">
-                        {{<%= camelize(name) %>.<%= entity.fields[e].name %> || "-"}}
-                    </div>
-                </div>
-                <% omited++; %>
-                <% notOmited++; %>
-                <% count++; %>
             <% } %>
-            <% if(entity.fields[e].input_type.name !== 'file' && count < 4 && omited < 2) { %>
-              <% omited++; %>
             <% } %>
-        <% } %>
-    </div>
+            <hr class="my-1" />
+            <div class="flex gap-2">
+               <% let omited = 0; let notOmited = 0 %>
+               <% for(let e in entity.fields) { %>
+               <% if(entity.fields[e].input_type.name !== 'file' && count < 4 && omited >= 2) { %>
+               <div class="<% if(notOmited==0) {  %>text-left<% } %><% if(notOmited==1) {  %>text-right<% } %>" style="width: calc(50% - 8px)">
+                  <div class="text-xs"><%= entity.fields[e].label %></div>
+                  <div class="text-base">
+                     {{<%= camelize(name) %>.<%= entity.fields[e].name %> || "-"}}
+                  </div>
+               </div>
+               <% omited++; %>
+               <% notOmited++; %>
+               <% count++; %>
+               <% } %>
+               <% if(entity.fields[e].input_type.name !== 'file' && count < 4 && omited < 2) { %>
+               <% omited++; %>
+               <% } %>
+               <% } %>
+            </div>
+         </div>
+      </div>
+   </div>
+   <mat-paginator
+   [length]="entitiesPaginated2?.total"
+   [pageSize]="entitiesPaginated2?.per_page"
+   [pageSizeOptions]="[10, 25, 100]"
+   (page)="paginate($event, 2)"
+   aria-label="Select page"
+   >
+   </mat-paginator>
 </div>
-
-    </div>
-  </div>
-  <mat-paginator
-    [length]="entitiesPaginated2?.total"
-    [pageSize]="entitiesPaginated2?.per_page"
-    [pageSizeOptions]="[10, 25, 100]"
-    (page)="paginate($event, 2)"
-    aria-label="Select page"
-  >
-  </mat-paginator>
+<div *ngIf="isChild">
+   <div [formGroup]="_searchFormGroup" class="grid grid-cols-11 gap-2 items-center search-form">
+      <% for (let e in entity.fields) { %> <% if(entity.fields[e].searchable) { %>
+      <!-- <%= entity.fields[e].code %> search field -->
+      <div class="col-span-2">
+         <mat-form-field class="w-full" appearance="outline">
+            <mat-label><%= entity.fields[e].label %></mat-label>
+            <% if(entity.fields[e].input_type.name==='date') { %>
+            <input class="cursor-pointer" (click)="<%= entity.fields[e].name %>_date.open()" matInput [matDatepicker]="<%= entity.fields[e].name %>_date" id='<%= entity.fields[e].name %>' formControlName="<%= entity.fields[e].name %>">
+            <mat-hint>YYYY-MM-DD</mat-hint>
+            <mat-datepicker #<%= entity.fields[e].name %>_date></mat-datepicker>
+            <% } %>
+            <% if(entity.fields[e].input_type.name==='text' || entity.fields[e].input_type.name==='number') { %>
+            <input
+               id="<%= entity.fields[e].name %>"
+               type="<%= entity.fields[e].input_type.name %>"
+               formControlName="<%= entity.fields[e].name %>"
+               matInput
+               />
+            <% } %> <% if(entity.fields[e].input_type.name==='select') { %>
+            <mat-select
+               id="<%= entity.fields[e].name %>"
+               formControlName="<%= entity.fields[e].name %>"
+               >
+               <mat-option value=""></mat-option>
+               <% for (let z in entity.fields[e].options) { %>
+               <mat-option value="<%= entity.fields[e].options[z].name %>"><%= entity.fields[e].options[z].name %> </mat-option>
+               <% } %>
+            </mat-select>
+            <% } %>
+         </mat-form-field>
+      </div>
+      <% } %> <% } %>
+      <div class="col-span-2">
+         <mat-form-field class="w-full" appearance="outline">
+            <mat-label>Termino</mat-label>
+            <input matInput formControlName="searchString" />
+         </mat-form-field>
+      </div>
+      <div class="col-span-1 text-left">
+         <button (click)="makeSearch(1)" mat-mini-fab>
+            <mat-icon aria-label="Example icon-button with a heart icon"
+               >search</mat-icon
+               >
+         </button>
+      </div>
+   </div>
+   <hr class="my-3" />
+   <div
+      class="sm:col-span-6 flex flex-col flex-auto py-2 px-6 bg-card shadow rounded-2xl overflow-hidden"
+      >
+      <!-- Section -->
+      <div class="flex flex-col flex-auto mt-2 overflow-x-auto max-h-100">
+         <table
+            class="md:min-w-240 overflow-y-visible"
+            mat-table
+            [dataSource]="dataSource"
+            >
+            <% for(let e in entity.fields) { %>
+            <% if(entity.fields[e].visible) { %>
+            <!-- <%= entity.fields[e].code %> column -->
+            <ng-container matColumnDef="<%= entity.fields[e].name %>">
+               <th mat-header-cell *matHeaderCellDef>
+                  <%= entity.fields[e].label %>
+               </th>
+               <td
+                  data-label="Dirección"
+                  mat-cell
+                  *matCellDef="let <%= camelize(name) %>"
+                  class="px-4"
+                  >
+                  <span class="font-medium">
+                  <% if(entity.fields[e].input_type.name !=='file') { %>
+                  {{<%= camelize(name) %>.<%= entity.fields[e].name %> || "-"}}
+                  <% } %> <% if(entity.fields[e].input_type.name ==='file') { %>
+                  {{getFileCounts(<%= camelize(name) %>.<%= entity.fields[e].name %>)}}
+                  <% } %>
+                  </span>
+               </td>
+            </ng-container>
+            <% } %>
+            <% } %>
+            <!-- Acciones -->
+            <ng-container matColumnDef="actions">
+               <th mat-header-cell *matHeaderCellDef>Acciones</th>
+               <td
+                  data-label="Acciones"
+                  mat-cell
+                  *matCellDef="let <%= camelize(name) %>"
+                  >
+                  <div class="flex justify-end gap-2">
+                     <div class="1/2">
+                        <mat-icon
+                           (click)="manageEntity(<%= camelize(name) %>.id)"
+                           class="text-on-primary-300 cursor-pointer"
+                           >edit</mat-icon
+                           >
+                     </div>
+                     <div class="1/2">
+                        <mat-icon
+                           (click)="confirmDestroy(<%= camelize(name) %>.id)"
+                           class="text-red-500 cursor-pointer"
+                           >delete</mat-icon
+                           >
+                     </div>
+                  </div>
+               </td>
+            </ng-container>
+            <tr
+               class="h-9"
+               mat-header-row
+               *matHeaderRowDef="columns; sticky: true"
+               ></tr>
+            <tr
+               class="h-6 hover-tabla"
+               mat-row
+               *matRowDef="let row; columns: columns"
+               ></tr>
+         </table>
+         <mat-paginator
+         [length]="entitiesPaginated1?.total"
+         [pageSize]="entitiesPaginated1?.per_page"
+         [pageSizeOptions]="[10, 25, 100]"
+         (page)="paginate($event, 1)"
+         aria-label="Select page"
+         >
+         </mat-paginator>
+      </div>
+   </div>
 </div>

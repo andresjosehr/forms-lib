@@ -1,12 +1,12 @@
-import { Component } from '@angular/core';
+import { Component, Inject } from '@angular/core';
 import { FormBuilder } from '@angular/forms';
 import { ActivatedRoute, Router } from '@angular/router';
 import { UserService } from 'app/core/user/user.service';
-import { EntitiesListComponent } from 'app/shared/generic-components/entities-list/entities-list.component';
+import { EntitiesListLayout1Component } from 'app/shared/generic-components/entities-list/entities-list-layout-1.component';
 import { GlobalService } from 'app/shared/services/global/global.service';
 import { FuseConfirmationService } from '@fuse/services/confirmation';
 import { MatSnackBar } from '@angular/material/snack-bar';
-import { MatDialog } from '@angular/material/dialog';
+import { MAT_DIALOG_DATA, MatDialog, MatDialogRef } from '@angular/material/dialog';
 
 import { <%= classify(name) %> } from '../<%= dasherize(name) %>';
 import { <%= classify(name) %>Service } from '../service/<%= dasherize(name) %>.service';
@@ -28,10 +28,10 @@ import { Manage<%= classify(name) %>Component } from '../manage-<%= dasherize(na
     }
   `]
 })
-export class <%= pluralize(classify(name)) %>ListComponent extends EntitiesListComponent<<%= classify(name) %>>{
+export class <%= pluralize(classify(name)) %>ListComponent extends EntitiesListLayout1Component<<%= classify(name) %>>{
 
   columns: Array<string> = [<% for(let e in entity.fields) { %><% if(entity.fields[e].visible) { %><% if(e!=0) { %>,<% } %> '<%=entity.fields[e].name%>'<% } %><% } %>, 'actions'];
-
+  isChild: boolean = false;
   constructor(
     protected _activatedRoute: ActivatedRoute,
     protected _router: Router,
@@ -41,7 +41,9 @@ export class <%= pluralize(classify(name)) %>ListComponent extends EntitiesListC
     protected _service: <%= classify(name) %>Service,
     protected _fuseConfirmationService: FuseConfirmationService,
     protected _matSnackBar: MatSnackBar,
-    protected dialog: MatDialog
+    protected dialog: MatDialog,
+    public dialogRef: MatDialogRef<CarsListComponent>,
+    @Inject(MAT_DIALOG_DATA) public data: any,
   ) {
     const searchFormGroup = _formBuilder.group({
         searchString: [],
@@ -50,6 +52,7 @@ export class <%= pluralize(classify(name)) %>ListComponent extends EntitiesListC
           <% } %><% } %>
     });
     super(_activatedRoute, _router, _formBuilder, _globalService, _userService, _fuseConfirmationService, _matSnackBar, searchFormGroup, _service, '<%= pluralizeSpanish(label) %>', '<%= label %>');
+    this.isChild = data.isChild;
   }
 
   getFileCounts(files: string): number{
@@ -75,6 +78,10 @@ export class <%= pluralize(classify(name)) %>ListComponent extends EntitiesListC
 
   getImages(files: string): string{
     return JSON.parse(files)[0]['fileBase64'];
+  }
+
+  selectEntity(entity: Car): void{
+    this.dialogRef.close(entity);
   }
 
 }

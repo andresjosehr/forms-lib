@@ -1,7 +1,7 @@
 import { Component, OnInit, Inject } from '@angular/core';
 import { FormBuilder, FormGroup, Validators } from '@angular/forms';
 import { ActivatedRoute, Router } from '@angular/router';
-import { ManageEntityComponent } from 'app/shared/generic-components/manage-entity/manage-entity.component';
+import { ManageEntityLayout1Component } from 'app/shared/generic-components/manage-entity/manage-entity-layout-1.component';
 import { GlobalService } from 'app/shared/services/global/global.service';
 import { MatSnackBar } from '@angular/material/snack-bar';
 import { MAT_DIALOG_DATA } from '@angular/material/dialog';
@@ -20,7 +20,7 @@ import { <%= classify(name) %>Service } from '../service/<%= dasherize(name) %>.
   selector: 'app-manage-<%= dasherize(name) %>',
   templateUrl: './manage-<%= dasherize(name) %>.component.html',
 })
-export class Manage<%= classify(name) %>Component extends ManageEntityComponent<<%= classify(name) %>> implements OnInit {
+export class Manage<%= classify(name) %>Component extends ManageEntityLayout1Component<<%= classify(name) %>> implements OnInit {
 
     <%= camelize(name) %>FormGroup: FormGroup;
     <% for(let e of entity.fields) { %>
