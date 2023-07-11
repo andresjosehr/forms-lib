@@ -3,6 +3,7 @@ export interface Field {
   code: string;
   name: string;
   label: string;
+
   built_creation: number;
   built_edition: number;
   field_type_id: number;
@@ -29,6 +30,7 @@ export interface Field {
     id: number;
     sql_property_type_id: number;
     related_entity_id: number | null;
+    related_entity: Entity;
     field_id: number;
     length: number | null;
     nullable: number;
@@ -40,7 +42,6 @@ export interface Field {
       created_at: string | null;
       updated_at: string | null;
     };
-    related_entity: any;
   };
   validations: Validation[],
   validations_string?: string;
@@ -67,6 +68,7 @@ export interface Entity {
   code: string;
   name: string;
   label: string;
+  layout: number;
   built_creation: number;
   built_edition: number;
   frontend_path: string;

@@ -1,12 +1,4 @@
-import {
-  Tree,
-  apply,
-  url,
-  applyTemplates,
-  move,
-  mergeWith,
-  SchematicContext,
-} from '@angular-devkit/schematics';
+import {  Tree,  apply,  url,  applyTemplates,  move,  mergeWith,  SchematicContext,} from '@angular-devkit/schematics';
 import { strings, normalize } from '@angular-devkit/core';
 import { Entity } from './entity.interface';
 import { labelize, pluralize, pluralizeSpanish } from './global';
@@ -25,15 +17,12 @@ export function editEntity(
   checkMenu(tree, entity);
   entity.fields = buildValidations(entity.fields);
 
-  const path =  `${entity.frontend_path}/${pluralize(strings.dasherize(entity.name))}/`;
+  const path =  `src/app/forms-${entity.layout}/${pluralize(strings.dasherize(entity.name))}`
 
-  tree.getDir(path).visit(filePath => {
-    tree.delete(filePath);
-  });
-
+  tree.getDir(path).visit(f => tree.delete(f) );
   tree.delete(path);
 
-  const templateSource = apply(url('./files'), [
+  const templateSource = apply(url(`./files/form-${entity.layout}`), [
     applyTemplates({
       classify: strings.classify,
       dasherize: strings.dasherize,

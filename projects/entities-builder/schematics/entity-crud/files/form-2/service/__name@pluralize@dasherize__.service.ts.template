@@ -1,0 +1,16 @@
+import { HttpClient } from '@angular/common/http';
+import { Injectable } from '@angular/core';
+import { GenericServiceService } from 'app/shared/services/generic-service/generic-service.service';
+import { <%= classify(name) %> } from '../<%= dasherize(name) %>';
+
+@Injectable({
+  providedIn: 'root'
+})
+export class <%= classify(pluralize(name)) %>Service extends GenericServiceService<<%= classify(name) %>>{
+
+  constructor(
+    private _http: HttpClient
+  ) {
+    super(_http, '<%= pluralize(dasherize(name)) %>')
+  }
+}

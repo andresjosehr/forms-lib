@@ -29,11 +29,10 @@
          </fuse-alert>
       </div>
    </div>
-   <div
-      [formGroup]="_searchFormGroup"
-      class="grid grid-cols-11 gap-2 items-center search-form"
-      >
-      <% for (let e in entity.fields) { %> <% if(entity.fields[e].searchable) { %>
+   <div [formGroup]="_searchFormGroup" class="grid grid-cols-11 gap-2 items-center search-form" >
+      <% for (let e in entity.fields) { %> <% if(entity.fields[e].searchable && entity.fields[e].input_type.name!='file') { %>
+
+      <!-- Este es el tipo: <%= entity.fields[e].input_type.name %> -->
       <!-- <%= entity.fields[e].code %> search field -->
       <div class="col-span-2">
          <mat-form-field class="w-full" appearance="outline">
@@ -44,23 +43,23 @@
             <mat-datepicker #<%= entity.fields[e].name %>_date></mat-datepicker>
             <% } %>
             <% if(entity.fields[e].input_type.name==='text' || entity.fields[e].input_type.name==='number') { %>
-            <input
-               id="<%= entity.fields[e].name %>"
-               type="<%= entity.fields[e].input_type.name %>"
-               formControlName="<%= entity.fields[e].name %>"
-               matInput
-               />
-            <% } %> <% if(entity.fields[e].input_type.name==='select') { %>
-            <mat-select
-               id="<%= entity.fields[e].name %>"
-               formControlName="<%= entity.fields[e].name %>"
-               >
+            <input id="<%= entity.fields[e].name %>" type="<%= entity.fields[e].input_type.name %>" formControlName="<%= entity.fields[e].name %>" matInput />
+            <% } %>
+            <% if(entity.fields[e].input_type.name==='select' || entity.fields[e].input_type.name==='radio') { %>
+            <mat-select id="<%= entity.fields[e].name %>" formControlName="<%= entity.fields[e].name %>" >
                <mat-option value=""></mat-option>
                <% for (let z in entity.fields[e].options) { %>
                <mat-option value="<%= entity.fields[e].options[z].name %>"><%= entity.fields[e].options[z].name %> </mat-option>
                <% } %>
             </mat-select>
             <% } %>
+            <% if(entity.fields[e].input_type.name==='checkbox') { %>
+              <mat-select id="<%= entity.fields[e].name %>" formControlName="<%= entity.fields[e].name %>" >
+                 <mat-option value=""></mat-option>
+                  <mat-option [value]="0">No</mat-option>
+                  <mat-option [value]="1">Si</mat-option>
+              </mat-select>
+              <% } %>
          </mat-form-field>
       </div>
       <% } %> <% } %>
@@ -96,17 +95,16 @@
                <th mat-header-cell *matHeaderCellDef>
                   <%= entity.fields[e].label %>
                </th>
-               <td
-                  data-label="Dirección"
-                  mat-cell
-                  *matCellDef="let <%= camelize(name) %>"
-                  class="px-4"
-                  >
+               <td data-label="Dirección" mat-cell *matCellDef="let <%= camelize(name) %>" class="px-4" >
                   <span class="font-medium">
-                  <% if(entity.fields[e].input_type.name !=='file') { %>
+                  <% if(entity.fields[e].input_type.name !=='file' && entity.fields[e].input_type.name !=='checkbox') { %>
                   {{<%= camelize(name) %>.<%= entity.fields[e].name %> || "-"}}
                   <% } %> <% if(entity.fields[e].input_type.name ==='file') { %>
                   {{getFileCounts(<%= camelize(name) %>.<%= entity.fields[e].name %>)}}
+                  <% } %>
+
+                  <% if(entity.fields[e].input_type.name ==='checkbox') { %>
+                    {{<%= camelize(name) %>.<%= entity.fields[e].name %> ? "Si" : "No"}}
                   <% } %>
                   </span>
                </td>
@@ -231,52 +229,54 @@
    </mat-paginator>
 </div>
 <div *ngIf="isChild">
-   <div [formGroup]="_searchFormGroup" class="grid grid-cols-11 gap-2 items-center search-form">
-      <% for (let e in entity.fields) { %> <% if(entity.fields[e].searchable) { %>
-      <!-- <%= entity.fields[e].code %> search field -->
-      <div class="col-span-2">
-         <mat-form-field class="w-full" appearance="outline">
-            <mat-label><%= entity.fields[e].label %></mat-label>
-            <% if(entity.fields[e].input_type.name==='date') { %>
-            <input class="cursor-pointer" (click)="<%= entity.fields[e].name %>_date.open()" matInput [matDatepicker]="<%= entity.fields[e].name %>_date" id='<%= entity.fields[e].name %>' formControlName="<%= entity.fields[e].name %>">
-            <mat-hint>YYYY-MM-DD</mat-hint>
-            <mat-datepicker #<%= entity.fields[e].name %>_date></mat-datepicker>
-            <% } %>
-            <% if(entity.fields[e].input_type.name==='text' || entity.fields[e].input_type.name==='number') { %>
-            <input
-               id="<%= entity.fields[e].name %>"
-               type="<%= entity.fields[e].input_type.name %>"
-               formControlName="<%= entity.fields[e].name %>"
-               matInput
-               />
-            <% } %> <% if(entity.fields[e].input_type.name==='select') { %>
-            <mat-select
-               id="<%= entity.fields[e].name %>"
-               formControlName="<%= entity.fields[e].name %>"
-               >
+  <div [formGroup]="_searchFormGroup" class="grid grid-cols-11 gap-2 items-center search-form" >
+    <% for (let e in entity.fields) { %> <% if(entity.fields[e].searchable && entity.fields[e].input_type.name!='file') { %>
+
+    <!-- Este es el tipo: <%= entity.fields[e].input_type.name %> -->
+    <!-- <%= entity.fields[e].code %> search field -->
+    <div class="col-span-2">
+       <mat-form-field class="w-full" appearance="outline">
+          <mat-label><%= entity.fields[e].label %></mat-label>
+          <% if(entity.fields[e].input_type.name==='date') { %>
+          <input class="cursor-pointer" (click)="<%= entity.fields[e].name %>_date.open()" matInput [matDatepicker]="<%= entity.fields[e].name %>_date" id='<%= entity.fields[e].name %>' formControlName="<%= entity.fields[e].name %>">
+          <mat-hint>YYYY-MM-DD</mat-hint>
+          <mat-datepicker #<%= entity.fields[e].name %>_date></mat-datepicker>
+          <% } %>
+          <% if(entity.fields[e].input_type.name==='text' || entity.fields[e].input_type.name==='number') { %>
+          <input id="<%= entity.fields[e].name %>" type="<%= entity.fields[e].input_type.name %>" formControlName="<%= entity.fields[e].name %>" matInput />
+          <% } %>
+          <% if(entity.fields[e].input_type.name==='select' || entity.fields[e].input_type.name==='radio') { %>
+          <mat-select id="<%= entity.fields[e].name %>" formControlName="<%= entity.fields[e].name %>" >
+             <mat-option value=""></mat-option>
+             <% for (let z in entity.fields[e].options) { %>
+             <mat-option value="<%= entity.fields[e].options[z].name %>"><%= entity.fields[e].options[z].name %> </mat-option>
+             <% } %>
+          </mat-select>
+          <% } %>
+          <% if(entity.fields[e].input_type.name==='checkbox') { %>
+            <mat-select id="<%= entity.fields[e].name %>" formControlName="<%= entity.fields[e].name %>" >
                <mat-option value=""></mat-option>
-               <% for (let z in entity.fields[e].options) { %>
-               <mat-option value="<%= entity.fields[e].options[z].name %>"><%= entity.fields[e].options[z].name %> </mat-option>
-               <% } %>
+                <mat-option [value]="0">No</mat-option>
+                <mat-option [value]="1">Si</mat-option>
             </mat-select>
             <% } %>
-         </mat-form-field>
-      </div>
-      <% } %> <% } %>
-      <div class="col-span-2">
-         <mat-form-field class="w-full" appearance="outline">
-            <mat-label>Termino</mat-label>
-            <input matInput formControlName="searchString" />
-         </mat-form-field>
-      </div>
-      <div class="col-span-1 text-left">
-         <button (click)="makeSearch(1)" mat-mini-fab>
-            <mat-icon aria-label="Example icon-button with a heart icon"
-               >search</mat-icon
-               >
-         </button>
-      </div>
-   </div>
+       </mat-form-field>
+    </div>
+    <% } %> <% } %>
+    <div class="col-span-2">
+       <mat-form-field class="w-full" appearance="outline">
+          <mat-label>Termino</mat-label>
+          <input matInput formControlName="searchString" />
+       </mat-form-field>
+    </div>
+    <div class="col-span-1 text-left">
+       <button (click)="makeSearch(1)" mat-mini-fab>
+          <mat-icon aria-label="Example icon-button with a heart icon"
+             >search</mat-icon
+             >
+       </button>
+    </div>
+ </div>
    <hr class="my-3" />
    <div
       class="sm:col-span-6 flex flex-col flex-auto py-2 px-6 bg-card shadow rounded-2xl overflow-hidden"
@@ -288,6 +288,7 @@
             mat-table
             [dataSource]="dataSource"
             >
+
             <% for(let e in entity.fields) { %>
             <% if(entity.fields[e].visible) { %>
             <!-- <%= entity.fields[e].code %> column -->
@@ -312,42 +313,15 @@
             </ng-container>
             <% } %>
             <% } %>
+
             <!-- Acciones -->
             <ng-container matColumnDef="actions">
-               <th mat-header-cell *matHeaderCellDef>Acciones</th>
-               <td
-                  data-label="Acciones"
-                  mat-cell
-                  *matCellDef="let <%= camelize(name) %>"
-                  >
-                  <div class="flex justify-end gap-2">
-                     <div class="1/2">
-                        <mat-icon
-                           (click)="manageEntity(<%= camelize(name) %>.id)"
-                           class="text-on-primary-300 cursor-pointer"
-                           >edit</mat-icon
-                           >
-                     </div>
-                     <div class="1/2">
-                        <mat-icon
-                           (click)="confirmDestroy(<%= camelize(name) %>.id)"
-                           class="text-red-500 cursor-pointer"
-                           >delete</mat-icon
-                           >
-                     </div>
-                  </div>
+               <th mat-header-cell *matHeaderCellDef class="hidden">Acciones</th>
+               <td class="hidden" data-label="Acciones" mat-cell *matCellDef="let <%= camelize(name) %>" >
                </td>
             </ng-container>
-            <tr
-               class="h-9"
-               mat-header-row
-               *matHeaderRowDef="columns; sticky: true"
-               ></tr>
-            <tr
-               class="h-6 hover-tabla"
-               mat-row
-               *matRowDef="let row; columns: columns"
-               ></tr>
+            <tr class="h-9" mat-header-row *matHeaderRowDef="columns; sticky: true" ></tr>
+            <tr (click)="selectEntity(row)" class="h-6 hover-tabla cursor-pointer" mat-row *matRowDef="let row; columns: columns" ></tr>
          </table>
          <mat-paginator
          [length]="entitiesPaginated1?.total"

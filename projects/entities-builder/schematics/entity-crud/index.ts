@@ -25,16 +25,17 @@ export function entityCrudGenerator(options: Options) {
 function handleExecution(entity: Entity, tree: Tree, context: SchematicContext, options: Options){
 
   if(options.delete){
+    console.log("Eliminando...")
     return deleteEntity(entity, tree, context);
   }
 
   if(!entity.built_creation){
+    console.log("Creando...")
     return createEntity(entity, tree, context);
   }
 
   if(entity.fields.some(field => field.built_edition) || entity.built_edition){
-    console.log("Edicion")
-    console.log(entity.fields.some(field => field.built_edition))
+    console.log("Editando...")
     return editEntity(entity, tree, context);
   }
 

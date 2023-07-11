@@ -42,7 +42,7 @@ export class <%= pluralize(classify(name)) %>ListComponent extends EntitiesListL
     protected _fuseConfirmationService: FuseConfirmationService,
     protected _matSnackBar: MatSnackBar,
     protected dialog: MatDialog,
-    public dialogRef: MatDialogRef<CarsListComponent>,
+    public dialogRef: MatDialogRef<any>,
     @Inject(MAT_DIALOG_DATA) public data: any,
   ) {
     const searchFormGroup = _formBuilder.group({
@@ -80,7 +80,7 @@ export class <%= pluralize(classify(name)) %>ListComponent extends EntitiesListL
     return JSON.parse(files)[0]['fileBase64'];
   }
 
-  selectEntity(entity: Car): void{
+  selectEntity(entity: any): void{
     this.dialogRef.close(entity);
   }
 

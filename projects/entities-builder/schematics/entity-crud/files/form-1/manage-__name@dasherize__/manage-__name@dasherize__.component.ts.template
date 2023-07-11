@@ -45,7 +45,7 @@ export class Manage<%= classify(name) %>Component extends ManageEntityLayout1Com
     ) {
         const entityFormGroup = _formBuilder.group({
           <% for(let e in entity.fields) { %> <% if(entity.fields[e].editable) { %>
-            <%= entity.fields[e].name %>: [<%= entity.fields[e]?.validations_string %>], // <%= entity.fields[e].code %>
+            <%= entity.fields[e].name %>: [<% if(entity.fields[e].input_type.name=='checkbox') { %>false<% } %><%= entity.fields[e]?.validations_string %>], // <%= entity.fields[e].code %>
           <% } %><% } %>
         });
         super(_globalService, _activateRoute, _formBuilder, _router, _matSnackBar, entityFormGroup, _service, data, '<%= pluralizeSpanish(label) %>', '<%= label %>');

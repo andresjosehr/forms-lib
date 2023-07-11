@@ -17,13 +17,16 @@ export function createEntity(
   context: SchematicContext
 ): Tree {
   // context
+
   // entity = checkForRelatedEntities(tree, entity);
+
   checkNewRoute(tree, entity);
   checkMenu(tree, entity);
+
   entity.fields = buildValidations(entity.fields);
 
 
-  const templateSource = apply(url('./files'), [
+  const templateSource = apply(url(`./files/form-${entity.layout}`), [
     applyTemplates({
       classify: strings.classify,
       dasherize: strings.dasherize,
@@ -39,12 +42,13 @@ export function createEntity(
     }),
     move(
       normalize(
-        `/${entity.frontend_path}/${pluralize(strings.dasherize(entity.name))}`
+        `src/app/forms-${entity.layout}/${pluralize(strings.dasherize(entity.name))}`
       )
     ),
   ]);
-
   return mergeWith(templateSource)(tree, context) as Tree;
+
+
 }
 
 // export function checkForRelatedEntities(tree: Tree, entity: Entity): Entity {
@@ -81,17 +85,26 @@ export function checkNewRoute(tree: Tree, entity: Entity): void {
   const routingModuleContent = (routingModule as any).toString();
 
   // Remove the first path, example: if string is 'src/app', remove 'src/'
-  const routeBasePath = entity.frontend_path.replace(/.*\//, '');
+  const routeBasePath = `app/forms-${entity.layout}`;
 
   if (
     !routingModuleContent.includes(
       `path: '${strings.dasherize(pluralize(entity.label))}',`
     )
   ) {
+
+    let route = '';
+    if(entity.layout == 1) {
+      route = `${routeBasePath}/${pluralize(strings.dasherize(entity.name))}/${pluralize(strings.dasherize(entity.name))}.module`;
+    }
+
+    if(entity.layout == 2) {
+      route = `${routeBasePath}/${pluralize(strings.dasherize(entity.name))}/${pluralize(strings.dasherize(entity.name))}/${pluralize(strings.dasherize(entity.name))}.module`;
+    }
     const newRoutingModuleContent = routingModuleContent.replace(
       '/* Add new routes here */',
       `/* Add new routes here */
-        { path: '${strings.dasherize(pluralizeSpanish(entity.label))}', loadChildren: () => import('${routeBasePath}/${pluralize(strings.dasherize(entity.name))}/${pluralize(strings.dasherize(entity.name))}.module').then(m => m.${strings.classify(pluralize(entity.name))}Module) },
+        { path: '${strings.dasherize(pluralizeSpanish(entity.label))}', loadChildren: () => import('${route}').then(m => m.${strings.classify(pluralize(entity.name))}Module) },
       `
     );
 
